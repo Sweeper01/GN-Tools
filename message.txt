@@ -1,0 +1,389 @@
+
+{
+    "data": {
+        "type": "combat",
+        "attributes": {
+            "target": {
+                "extractorsMetal": 99,
+                "extractorsCrystal": 99
+            },
+            "attacker": [
+                {
+                    "name": "Carpenter Flotte 1",
+                    "calculateInsufficientCarrierSpace": true,
+                    "units": {
+                        "26": 400,
+                        "22": 800,
+                        "33": 500,
+                        "44": 500
+                    }
+                },
+                {
+                    "name": "Carpenter Flotte 2",
+                    "calculateInsufficientCarrierSpace": true,
+                    "units": {
+                        "9": 3000
+                    }
+                }
+            ],
+            "defender": [
+                {
+                    "name": "Sweeper Orbit",
+                    "calculateInsufficientCarrierSpace": false,
+                    "units": {
+                        "2": 5000
+                    }
+                },
+                {
+                    "name": "Sweeper Flotte 1",
+                    "calculateInsufficientCarrierSpace": false,
+                    "units": {
+                        "2": 5000
+                    }
+                },
+                {
+                    "name": "Sweeper Flotte 3",
+                    "calculateInsufficientCarrierSpace": false,
+                    "units": {
+                        "8": 500
+                    }
+                }
+            ],
+            "config": {
+                "mode": "combat",
+                "units": [
+                    {
+                        "unitId": 1,
+                        "name": "Jäger",
+                        "costMetal": 4000,
+                        "costCrystal": 6000,
+                        "carrierSpace": 0,
+                        "carrierSpaceConsumption": 1,
+                        "extractorStealAmount": 0,
+                        "extractorGuardAmount": 0,
+                        "cargo": 0,
+                        "combatSettings": [
+                            {
+                                "targetUnitId": 12,
+                                "ratio": 0.35,
+                                "attackPower": 0.0246
+                            },
+                            {
+                                "targetUnitId": 2,
+                                "ratio": 0.3,
+                                "attackPower": 0.392
+                            },
+                            {
+                                "targetUnitId": 5,
+                                "ratio": 0.35,
+                                "attackPower": 0.0263
+                            }
+                        ]
+                    },
+                    {
+                        "unitId": 2,
+                        "name": "Bomber",
+                        "costMetal": 2000,
+                        "costCrystal": 8000,
+                        "carrierSpace": 0,
+                        "carrierSpaceConsumption": 1,
+                        "extractorStealAmount": 0,
+                        "extractorGuardAmount": 0,
+                        "cargo": 0,
+                        "combatSettings": [
+                            {
+                                "targetUnitId": 13,
+                                "ratio": 0.35,
+                                "attackPower": 0.008
+                            },
+                            {
+                                "targetUnitId": 6,
+                                "ratio": 0.35,
+                                "attackPower": 0.01
+                            },
+                            {
+                                "targetUnitId": 7,
+                                "ratio": 0.3,
+                                "attackPower": 0.0075
+                            }
+                        ]
+                    },
+                    {
+                        "unitId": 3,
+                        "name": "Fregatte",
+                        "costMetal": 15000,
+                        "costCrystal": 7500,
+                        "carrierSpace": 0,
+                        "carrierSpaceConsumption": 0,
+                        "extractorStealAmount": 0,
+                        "extractorGuardAmount": 0,
+                        "cargo": 0,
+                        "combatSettings": [
+                            {
+                                "targetUnitId": 14,
+                                "ratio": 0.6,
+                                "attackPower": 4.5
+                            },
+                            {
+                                "targetUnitId": 1,
+                                "ratio": 0.4,
+                                "attackPower": 0.85
+                            }
+                        ]
+                    },
+                    {
+                        "unitId": 4,
+                        "name": "Zerstörer",
+                        "costMetal": 40000,
+                        "costCrystal": 30000,
+                        "carrierSpace": 0,
+                        "carrierSpaceConsumption": 0,
+                        "extractorStealAmount": 0,
+                        "extractorGuardAmount": 0,
+                        "cargo": 0,
+                        "combatSettings": [
+                            {
+                                "targetUnitId": 10,
+                                "ratio": 0.6,
+                                "attackPower": 3.5
+                            },
+                            {
+                                "targetUnitId": 3,
+                                "ratio": 0.4,
+                                "attackPower": 1.2444
+                            }
+                        ]
+                    },
+                    {
+                        "unitId": 5,
+                        "name": "Kreuzer",
+                        "costMetal": 65000,
+                        "costCrystal": 85000,
+                        "carrierSpace": 0,
+                        "carrierSpaceConsumption": 0,
+                        "extractorStealAmount": 0,
+                        "extractorGuardAmount": 0,
+                        "cargo": 0,
+                        "combatSettings": [
+                            {
+                                "targetUnitId": 11,
+                                "ratio": 0.35,
+                                "attackPower": 2.0
+                            },
+                            {
+                                "targetUnitId": 4,
+                                "ratio": 0.3,
+                                "attackPower": 0.8571
+                            },
+                            {
+                                "targetUnitId": 9,
+                                "ratio": 0.35,
+                                "attackPower": 10.0
+                            }
+                        ]
+                    },
+                    {
+                        "unitId": 6,
+                        "name": "Schlachtschiff",
+                        "costMetal": 250000,
+                        "costCrystal": 150000,
+                        "carrierSpace": 0,
+                        "carrierSpaceConsumption": 0,
+                        "extractorStealAmount": 0,
+                        "extractorGuardAmount": 0,
+                        "cargo": 0,
+                        "combatSettings": [
+                            {
+                                "targetUnitId": 12,
+                                "ratio": 0.2,
+                                "attackPower": 1.0
+                            },
+                            {
+                                "targetUnitId": 5,
+                                "ratio": 0.2,
+                                "attackPower": 1.0666
+                            },
+                            {
+                                "targetUnitId": 6,
+                                "ratio": 0.2,
+                                "attackPower": 0.4
+                            },
+                            {
+                                "targetUnitId": 7,
+                                "ratio": 0.2,
+                                "attackPower": 0.3019
+                            },
+                            {
+                                "targetUnitId": 9,
+                                "ratio": 0.2,
+                                "attackPower": 26.6667
+                            }
+                        ]
+                    },
+                    {
+                        "unitId": 7,
+                        "name": "Trägerschiff",
+                        "costMetal": 200000,
+                        "costCrystal": 50000,
+                        "carrierSpace": 100,
+                        "carrierSpaceConsumption": 0,
+                        "extractorStealAmount": 0,
+                        "extractorGuardAmount": 0,
+                        "cargo": 100000,
+                        "combatSettings": [
+                            {
+                                "targetUnitId": 8,
+                                "ratio": 0.5,
+                                "attackPower": 25.0
+                            },
+                            {
+                                "targetUnitId": 9,
+                                "ratio": 0.5,
+                                "attackPower": 14.0
+                            }
+                        ]
+                    },
+                    {
+                        "unitId": 8,
+                        "name": "Kaperschiff",
+                        "costMetal": 1500,
+                        "costCrystal": 1000,
+                        "carrierSpace": 0,
+                        "carrierSpaceConsumption": 0,
+                        "extractorStealAmount": 1,
+                        "extractorGuardAmount": 0,
+                        "cargo": 0,
+                        "combatSettings": []
+                    },
+                    {
+                        "unitId": 9,
+                        "name": "Schutzschiff",
+                        "costMetal": 1000,
+                        "costCrystal": 1500,
+                        "carrierSpace": 0,
+                        "carrierSpaceConsumption": 0,
+                        "extractorStealAmount": 0,
+                        "extractorGuardAmount": 1,
+                        "cargo": 0,
+                        "combatSettings": []
+                    },
+                    {
+                        "unitId": 10,
+                        "name": "Leichtes Orbitalgeschütz",
+                        "costMetal": 6000,
+                        "costCrystal": 2000,
+                        "carrierSpace": 0,
+                        "carrierSpaceConsumption": 0,
+                        "extractorStealAmount": 0,
+                        "extractorGuardAmount": 0,
+                        "cargo": 0,
+                        "combatSettings": [
+                            {
+                                "targetUnitId": 1,
+                                "ratio": 0.6,
+                                "attackPower": 0.3
+                            },
+                            {
+                                "targetUnitId": 8,
+                                "ratio": 0.4,
+                                "attackPower": 1.28
+                            }
+                        ]
+                    },
+                    {
+                        "unitId": 11,
+                        "name": "Leichtes Raumgeschütz",
+                        "costMetal": 20000,
+                        "costCrystal": 10000,
+                        "carrierSpace": 0,
+                        "carrierSpaceConsumption": 0,
+                        "extractorStealAmount": 0,
+                        "extractorGuardAmount": 0,
+                        "cargo": 0,
+                        "combatSettings": [
+                            {
+                                "targetUnitId": 2,
+                                "ratio": 0.4,
+                                "attackPower": 1.2
+                            },
+                            {
+                                "targetUnitId": 3,
+                                "ratio": 0.6,
+                                "attackPower": 0.5334
+                            }
+                        ]
+                    },
+                    {
+                        "unitId": 12,
+                        "name": "Mittleres Raumgeschütz",
+                        "costMetal": 60000,
+                        "costCrystal": 100000,
+                        "carrierSpace": 0,
+                        "carrierSpaceConsumption": 0,
+                        "extractorStealAmount": 0,
+                        "extractorGuardAmount": 0,
+                        "cargo": 0,
+                        "combatSettings": [
+                            {
+                                "targetUnitId": 4,
+                                "ratio": 0.4,
+                                "attackPower": 0.9143
+                            },
+                            {
+                                "targetUnitId": 5,
+                                "ratio": 0.6,
+                                "attackPower": 0.4267
+                            }
+                        ]
+                    },
+                    {
+                        "unitId": 13,
+                        "name": "Schweres Raumgeschütz",
+                        "costMetal": 200000,
+                        "costCrystal": 300000,
+                        "carrierSpace": 0,
+                        "carrierSpaceConsumption": 0,
+                        "extractorStealAmount": 0,
+                        "extractorGuardAmount": 0,
+                        "cargo": 0,
+                        "combatSettings": [
+                            {
+                                "targetUnitId": 6,
+                                "ratio": 0.5,
+                                "attackPower": 0.5
+                            },
+                            {
+                                "targetUnitId": 7,
+                                "ratio": 0.5,
+                                "attackPower": 0.3774
+                            }
+                        ]
+                    },
+                    {
+                        "unitId": 14,
+                        "name": "Abfangjäger",
+                        "costMetal": 1000,
+                        "costCrystal": 1000,
+                        "carrierSpace": 0,
+                        "carrierSpaceConsumption": 0,
+                        "extractorStealAmount": 0,
+                        "extractorGuardAmount": 0,
+                        "cargo": 0,
+                        "combatSettings": [
+                            {
+                                "targetUnitId": 4,
+                                "ratio": 0.4,
+                                "attackPower": 0.0114
+                            },
+                            {
+                                "targetUnitId": 8,
+                                "ratio": 0.6,
+                                "attackPower": 0.32
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    }
+}
