@@ -87,6 +87,7 @@ export default {
         },
         delay: {
             set(delay) {
+                console.log("delay", this.scan.id, this.scan)
                 this.$root.$emit('selectDelay', this.scan.id, this.fleet, delay)
             },
             get() {

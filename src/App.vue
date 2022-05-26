@@ -101,7 +101,7 @@ export default {
                     this.scans.forEach(function (scan) {
                         for (let f = 0; f <= 2; f++) {
                             let fleet = {
-                                name: scan.id + '_' + f,
+                                name: scan.id + '%' + f,
                                 units: { ...scan.fleet[f].units },
                                 calculateInsufficientCarrierSpace: false,
                             }
@@ -151,7 +151,7 @@ export default {
                     request.data.attributes.target.extractorsMetal = result.data.attributes.after.target.extractorsMetal
                     request.data.attributes.target.extractorsCrystal = result.data.attributes.after.target.extractorsCrystal
                     request.data.attributes.attacker = result.data.attributes.after.attacker.filter(function (fleet) {
-                        let name = fleet.name.split('_')
+                        let name = fleet.name.split('%')
                         let id = name[0]
                         let fleetnr = name[1]
                         let scan = _this.getFleet(id)
@@ -161,7 +161,7 @@ export default {
                         return i + 1 < endtick
                     })
                     request.data.attributes.defender = result.data.attributes.after.defender.filter(function (fleet) {
-                        let name = fleet.name.split('_')
+                        let name = fleet.name.split('%')
                         let id = name[0]
                         let fleetnr = name[1]
                         let scan = _this.getFleet(id)

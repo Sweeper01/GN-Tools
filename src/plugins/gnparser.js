@@ -75,7 +75,7 @@ export default {
             let cords = header[3].replace('(', '').replace(')', '').split(':')
             result.galaxy = cords[0]
             result.nr = cords[1]
-            result.id = header[2] + '-' + cords[0] + '-' + cords[1]
+            result.id = header[2] + '§' + cords[0] + '§' + cords[1]
 
             console.log(type)
             // MILISCAN
