@@ -35,8 +35,9 @@ import GnScan from '@/components/GnScan'
 import config from '@/config.json'
 import axios from 'axios'
 
-// import test from '@/test.json'
+import test from '@/test.json'
 /* eslint-disable no-unused-vars */
+/* eslint-disable no-case-declarations */
 export default {
     name: 'App',
 
@@ -71,10 +72,10 @@ export default {
             return this.scans.find((sc) => sc.id == id)
         },
         simulate: async function () {
-            let _this = this
+            // let _this = this
 
             console.log('SIMULATE!')
-            let config = {
+            let cfg = {
                 headers: {
                     Accept: 'application/vnd.api+json;version=1.0',
                     'Content-Type': 'application/json',
@@ -83,14 +84,17 @@ export default {
 
             let request = {
                 data: {
-                    type: 'combat',
+                    type: 'combats',
                     attributes: {
                         target: {
-                            extractorsMetal: 0,
-                            extractorsCrystal: 0,
+                            fleets: [],
+                            extractors: {
+                                metal: 0,
+                                crystal: 0,
+                            },
                         },
-                        attacker: [],
-                        defender: [],
+                        attackers: [],
+                        defenders: [],
                     },
                 },
             }
@@ -99,81 +103,107 @@ export default {
             for (let i = 0; i < this.ticks; i++) {
                 try {
                     this.scans.forEach(function (scan) {
-                        for (let f = 0; f <= 2; f++) {
-                            let fleet = {
-                                name: scan.id + '%' + f,
-                                units: { ...scan.fleet[f].units },
-                                calculateInsufficientCarrierSpace: false,
-                            }
-                            if (f == 0) {
-                                fleet.units = { ...scan.fleet[f].units, ...scan.orb }
-                            }
+                        switch (scan.type) {
+                            case 0:
+                                request.data.attributes.target.name = "" + scan.id
 
-                            switch (scan.type) {
-                                case 0:
-                                    if (i == 0) {
-                                        if (scan.exen.extractorsMetal) {
-                                            request.data.attributes.target.extractorsMetal = parseInt(scan.exen.extractorsMetal)
-                                        }
-                                        if (scan.exen.extractorsCrystal) {
-                                            request.data.attributes.target.extractorsCrystal = parseInt(scan.exen.extractorsCrystal)
-                                        }
+                                Object.keys(config.EXEN).forEach((exe) => {
+                                    request.data.attributes.target.extractors[exe] = parseInt(scan.exen[exe])
+                                })
 
-                                        if (Object.keys(fleet.units).length > 0) {
-                                            request.data.attributes.defender.push(fleet)
-                                        }
+                                for (let f = 0; f <= 2; f++) {
+                                    let fleet = {
+                                        name: "" + f,
+                                        units: f == 0 ? { ...scan.fleet[f].units, ...scan.orb } : { ...scan.fleet[f].units },
                                     }
-                                    break
-                                case 1:
+
+                                    if (Object.keys(fleet.units).length > 0) {
+                                        request.data.attributes.target.fleets.push(fleet)
+                                    }
+                                }
+                                break
+                            case 1:
+                                let defender = {
+                                    name: "" + scan.id,
+                                    fleets: [],
+                                }
+
+                                for (let f = 0; f <= 2; f++) {
+                                    let fleet = {
+                                        name: "" + f,
+                                        units: { ...scan.fleet[f].units },
+                                        calculateCarrierCapacityLosses: i == scan.fleet[f].delay + scan.fleet[f].duration ? true : false,
+                                    }
+
                                     if (i == scan.fleet[f].delay) {
                                         if (Object.keys(fleet.units).length > 0) {
-                                            request.data.attributes.defender.push(fleet)
+                                            defender.fleets.push(fleet)
                                         }
                                     }
-                                    break
-                                case 2:
+                                }
+
+                                if (defender.fleets.length > 0) {
+                                    request.data.attributes.defenders.push(defender)
+                                }
+
+                                break
+                            case 2:
+                                let attacker = {
+                                    name: "" + scan.id,
+                                    fleets: [],
+                                }
+
+                                for (let f = 0; f <= 2; f++) {
+                                    let fleet = {
+                                        name: "" + f,
+                                        units: { ...scan.fleet[f].units },
+                                        calculateCarrierCapacityLosses: i == scan.fleet[f].delay + scan.fleet[f].duration ? true : false,
+                                    }
+
                                     if (i == scan.fleet[f].delay) {
                                         if (Object.keys(fleet.units).length > 0) {
-                                            request.data.attributes.attacker.push(fleet)
+                                            attacker.fleets.push(fleet)
                                         }
                                     }
-                                    break
-                                default:
-                                    break
-                            }
+                                }
+
+                                if (attacker.fleets.length > 0) {
+                                    request.data.attributes.attackers.push(attacker)
+                                }
+                                break
                         }
                     })
 
-                    let response = await axios.post('https://galactic-conquest.de/api/combat', request, config)
+                    let response = await axios.post('https://galactic-conquest.de/api/combats', request, cfg)
                     let result = response.data
                     this.results.push({ tick: i + 1, data: result })
 
-                    request.data.attributes.target.extractorsMetal = result.data.attributes.after.target.extractorsMetal
-                    request.data.attributes.target.extractorsCrystal = result.data.attributes.after.target.extractorsCrystal
-                    request.data.attributes.attacker = result.data.attributes.after.attacker.filter(function (fleet) {
-                        let name = fleet.name.split('%')
-                        let id = name[0]
-                        let fleetnr = name[1]
-                        let scan = _this.getFleet(id)
+                    // request.data.attributes.target.extractorsMetal = result.data.attributes.after.target.extractorsMetal
+                    // request.data.attributes.target.extractorsCrystal = result.data.attributes.after.target.extractorsCrystal
+                    // request.data.attributes.attacker = result.data.attributes.after.attacker.filter(function (fleet) {
+                    //     let name = fleet.name.split('%')
+                    //     let id = name[0]
+                    //     let fleetnr = name[1]
+                    //     let scan = _this.getFleet(id)
 
-                        let endtick = scan.fleet[fleetnr].delay + scan.fleet[fleetnr].duration
+                    //     let endtick = scan.fleet[fleetnr].delay + scan.fleet[fleetnr].duration
 
-                        return i + 1 < endtick
-                    })
-                    request.data.attributes.defender = result.data.attributes.after.defender.filter(function (fleet) {
-                        let name = fleet.name.split('%')
-                        let id = name[0]
-                        let fleetnr = name[1]
-                        let scan = _this.getFleet(id)
+                    //     return i + 1 < endtick
+                    // })
+                    // request.data.attributes.defender = result.data.attributes.after.defender.filter(function (fleet) {
+                    //     let name = fleet.name.split('%')
+                    //     let id = name[0]
+                    //     let fleetnr = name[1]
+                    //     let scan = _this.getFleet(id)
 
-                        if (scan.type == 0) {
-                            return true
-                        } else {
-                            let endtick = scan.fleet[fleetnr].delay + scan.fleet[fleetnr].duration
+                    //     if (scan.type == 0) {
+                    //         return true
+                    //     } else {
+                    //         let endtick = scan.fleet[fleetnr].delay + scan.fleet[fleetnr].duration
 
-                            return i + 1 < endtick
-                        }
-                    })
+                    //         return i + 1 < endtick
+                    //     }
+                    // })
                 } catch (e) {
                     console.warn(e)
                 }
@@ -181,8 +211,8 @@ export default {
         },
     },
     mounted: function () {
-        // console.warn(test.SCANS)
-        // this.scans = test.SCANS
+        console.warn(test.SCANS)
+        this.scans = test.SCANS
 
         let _this = this
         this.$root.$on('selectDuration', (id, fleet, duration) => {

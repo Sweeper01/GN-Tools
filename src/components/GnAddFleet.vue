@@ -218,9 +218,10 @@ export default {
 
             this.reset()
         },
-        clean: function(scan) {
-            for(let i = 0; i < 3; i++){
-                Object.keys(scan.fleet[i].units).forEach((u) => (scan.fleet[i].units[u] == 0 || scan.fleet[i].units[u] == "") && delete scan.fleet[i].units[u]);
+        clean: function (scan) {
+            for (let i = 0; i < 3; i++) {
+                Object.keys(scan.fleet[i].units).forEach((u) => (scan.fleet[i].units[u] == 0 || scan.fleet[i].units[u] == '') && delete scan.fleet[i].units[u])
+                Object.keys(scan.fleet[i].units).forEach((u) => (scan.fleet[i].units[u] = parseInt(scan.fleet[i].units[u])))
             }
 
             return scan

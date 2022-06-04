@@ -1,128 +1,85 @@
 {
    "SCANS": [
       {
+         "id": 1654287545329,
+         "name": "",
          "type": 0,
-         "id": "Bautram-33-1",
-         "name": "Bautram",
-         "galaxy": "33",
-         "nr": "1",
          "exen": {
-            "extractorsMetal": 240,
-            "extractorsCrystal": 530
+            "metal": 150,
+            "crystal": 150
          },
          "orb": {
-            "10": "1000",
-            "11": "100",
-            "12": "50",
-            "13": "20",
-            "14": "5000"
+            "AJ": 1000
          },
          "fleet": {
             "0": {
-               "units": {
-                  "1": "15000",
-                  "2": "15000",
-                  "3": "2000",
-                  "4": "2000",
-                  "7": "1000",
-                  "9": "10000"
-               }
+               "units": {}
             },
             "1": {
-               "units": {}
+               "units": {
+                  "FR": 100
+               },
+               "delay": 0,
+               "duration": 20
             },
             "2": {
-               "units": {}
+               "units": {
+                  "ZE": 20
+               },
+               "delay": 0,
+               "duration": 20
             }
          }
       },
       {
+         "id": 1654287557632,
+         "name": "",
          "type": 1,
-         "id": "xpender-33-2",
-         "name": "xpender",
-         "galaxy": "33",
-         "nr": "2",
+         "exen": {},
+         "orb": {},
          "fleet": {
             "0": {
                "units": {}
             },
             "1": {
-               "delay": 0,
-               "duration": 20,
                "units": {
-                  "1": "2000",
-                  "2": "3000",
-                  "3": "500",
-                  "5": "300",
-                  "7": "1000",
-                  "9": "10000"
-               }
+                  "CA": 2000,
+                  "ZE": 100
+               },
+               "delay": 0,
+               "duration": 20
             },
             "2": {
+               "units": {},
                "delay": 0,
-               "duration": 20,
-               "units": {}
+               "duration": 20
             }
          }
       },
       {
+         "id": 1654287566785,
+         "name": "",
          "type": 2,
-         "id": "DirkDiggler-9-4",
-         "name": "DirkDiggler",
-         "galaxy": "9",
-         "nr": "4",
+         "exen": {},
+         "orb": {},
          "fleet": {
             "0": {
                "units": {}
             },
             "1": {
-               "delay": 0,
-               "duration": 5,
                "units": {
-                  "2": "30000",
-                  "3": "2000",
-                  "5": "2000",
-                  "7": "500"
-               }
+                  "FR": 1000,
+                  "KR": 1000
+               },
+               "delay": 0,
+               "duration": 5
             },
             "2": {
-               "delay": 1,
-               "duration": 5,
                "units": {
-                  "8": "77000",
-                  "9": "2000"
-               }
-            }
-         }
-      },
-      {
-         "type": 2,
-         "name": "Sweeper",
-         "id": "Sweeper-9-1",
-         "galaxy": "9",
-         "nr": "1",
-         "fleet": {
-            "0": {
-               "units": {}
-            },
-            "1": {
+                  "CL": 20000
+               },
                "delay": 0,
-               "duration": 5,
-               "units": {
-                  "1": "20000",
-                  "3": "2000",
-                  "4": "5000",
-                  "6": "500",
-                  "7": "500"
-               }
-            },
-            "2": {
-               "delay": 1,
-               "duration": 5,
-               "units": {
-                  "8": "62000",
-                  "9": "3000"
-               }
+               "duration": 5
             }
          }
       }

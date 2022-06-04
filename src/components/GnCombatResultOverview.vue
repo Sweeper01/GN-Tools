@@ -21,21 +21,21 @@
                                     </thead>
                                     <tr v-for="UNIT in UNITS" :key="UNIT.ID">
                                         <td>{{ UNIT.NAME }}</td>
-                                        <td>{{ format(getDefenderBefore(UNIT.ID)) }}</td>
-                                        <td>{{ format(getDefenderBefore(UNIT.ID) - getDefenderLost(UNIT.ID)) }}</td>
-                                        <td>{{ format(getDefenderLost(UNIT.ID)) }}</td>
+                                        <td>{{ format(getTargetBefore(UNIT.ID)) }}</td>
+                                        <td>{{ format(getTargetAfter(UNIT.ID)) }}</td>
+                                        <td>{{ format(getTargetLost(UNIT.ID)) }}</td>
                                     </tr>
                                     <tr v-for="UNIT in ORB" :key="UNIT.ID">
                                         <td>{{ UNIT.NAME }}</td>
-                                        <td>{{ format(getDefenderBefore(UNIT.ID)) }}</td>
-                                        <td>{{ format(getDefenderBefore(UNIT.ID) - getDefenderLost(UNIT.ID)) }}</td>
-                                        <td>{{ format(getDefenderLost(UNIT.ID)) }}</td>
+                                        <td>{{ format(getTargetBefore(UNIT.ID)) }}</td>
+                                        <td>{{ format(getTargetAfter(UNIT.ID)) }}</td>
+                                        <td>{{ format(getTargetLost(UNIT.ID)) }}</td>
                                     </tr>
                                     <tr v-for="UNIT in EXEN" :key="UNIT.ID">
                                         <td>{{ UNIT.NAME }}</td>
-                                        <td>{{ format(getTargetBefore(UNIT.ID)) }}</td>
-                                        <td>{{ format(getTargetAfter(UNIT.ID)) }}</td>
-                                        <td>{{ format(getTargetAfter(UNIT.AFTER)) }}</td>
+                                        <td>{{ format(getExenBefore(UNIT.ID)) }}</td>
+                                        <td>{{ format(getExenAfter(UNIT.ID)) }}</td>
+                                        <td>{{ format(getExenLost(UNIT.ID)) }}</td>
                                     </tr>
                                 </table>
                             </v-col>
@@ -50,26 +50,26 @@
                                     </thead>
                                     <tr v-for="RESOURCE in RESOURCES" :key="RESOURCE.ID">
                                         <td>{{ RESOURCE.NAME + ':' }}</td>
-                                        <td>{{ format(after.defender[0][RESOURCE.COST]) }}</td>
+                                        <td>{{ format(getTargetCosts(RESOURCE.ID)) }}</td>
                                     </tr>
                                     <tr>
                                         <td>Summe:</td>
-                                        <td>{{ format(getSumResourcesCost(after.defender[0])) }}</td>
+                                        <td>{{ format(getSumTargetCosts()) }}</td>
                                     </tr>
                                     <thead>
                                         <th colspan="2">Bergungsressourcen</th>
                                     </thead>
                                     <tr v-for="RESOURCE in RESOURCES" :key="RESOURCE.ID + '1'">
                                         <td>{{ RESOURCE.NAME + ':' }}</td>
-                                        <td>{{ format(after.defender[0][RESOURCE.SALVAGE]) }}</td>
+                                        <td>{{ format(getTargetBR(RESOURCE.ID)) }}</td>
                                     </tr>
                                     <tr>
                                         <td>Summe:</td>
-                                        <td>{{ format(getSumResourcesSalvage(after.defender[0])) }}</td>
+                                        <td>{{ format(getSumTargetBR()) }}</td>
                                     </tr>
                                     <tr>
-                                        <td>{{ getCostSalveTotal() >= 0 ? 'Gewinn:' : 'Verlust:' }}</td>
-                                        <td>{{ format(getCostSalveTotal()) }}</td>
+                                        <td>{{ getSumTargetProfit() >= 0 ? 'Gewinn:' : 'Verlust:' }}</td>
+                                        <td>{{ format(getSumTargetProfit()) }}</td>
                                     </tr>
                                 </table>
                             </v-col>
@@ -95,7 +95,7 @@
                                     <tr v-for="UNIT in UNITS" :key="UNIT.ID">
                                         <td>{{ UNIT.NAME }}</td>
                                         <td>{{ format(getAttackerBefore(UNIT.ID)) }}</td>
-                                        <td>{{ format(getAttackerBefore(UNIT.ID) - getAttackerLost(UNIT.ID)) }}</td>
+                                        <td>{{ format(getAttackerAfter(UNIT.ID)) }}</td>
                                         <td>{{ format(getAttackerLost(UNIT.ID)) }}</td>
                                     </tr>
                                 </table>
@@ -111,26 +111,26 @@
                                     </thead>
                                     <tr v-for="RESOURCE in RESOURCES" :key="RESOURCE.ID">
                                         <td>{{ RESOURCE.NAME + ':' }}</td>
-                                        <td>{{ format(after.attacker[0][RESOURCE.COST]) }}</td>
+                                        <td>{{ format(getAttackerCosts(RESOURCE.ID)) }}</td>
                                     </tr>
                                     <tr>
                                         <td>Summe:</td>
-                                        <td>{{ format(getSumResourcesCost(after.attacker[0])) }}</td>
+                                        <td>{{ format(getSumAttackerCosts()) }}</td>
                                     </tr>
                                     <thead>
                                         <th colspan="2">Exen</th>
                                     </thead>
                                     <tr v-for="EXE in EXEN" :key="EXE.ID">
                                         <td>{{ EXE.NAME + ':' }}</td>
-                                        <td>{{ format(after.attacker[0][EXE.AFTERFALSE]) }}</td>
+                                        <td>{{ format(getAttackerExenStolen(EXE.ID)) }}</td>
                                     </tr>
                                     <tr>
                                         <td>Summe:</td>
-                                        <td>{{ format(getSumExen()) }}</td>
+                                        <td>{{ format(getSumAttackerExenStolen()) }}</td>
                                     </tr>
                                     <tr>
                                         <td>Kosten pro Exe:</td>
-                                        <td>{{ format(getCostsPerExe()) }}</td>
+                                        <td>{{ format(getAttackerCostsPerExe()) }}</td>
                                     </tr>
                                 </table>
                             </v-col>
@@ -167,75 +167,95 @@ export default {
         RESOURCES: function () {
             return config.RESOURCES
         },
-        before: function () {
-            return this.total.data.attributes.before
-        },
-        after: function () {
-            return this.total.data.attributes.after
+        attributes: function () {
+            return this.total.data.attributes
         },
     },
     methods: {
         format(number) {
             return Number(number).toLocaleString()
         },
-        getAttackerBefore(unitId) {
-            return this.before.attacker[0].units[unitId] ? this.before.attacker[0].units[unitId] : 0
+        getExenBefore(unitId) {
+            return this.attributes.target.extractors.before[unitId] ? this.attributes.target.extractors.before[unitId] : 0
         },
-        getAttackerLost(unitId) {
-            return this.after.attacker[0].lostUnits[unitId] ? this.after.attacker[0].lostUnits[unitId] : 0
+        getExenAfter(unitId) {
+            return this.attributes.target.extractors.after[unitId] ? this.attributes.target.extractors.after[unitId] : 0
         },
-        getDefenderBefore(unitId) {
-            return this.before.defender[0].units[unitId] ? this.before.defender[0].units[unitId] : 0
-        },
-        getDefenderLost(unitId) {
-            return this.after.defender[0].lostUnits[unitId] ? this.after.defender[0].lostUnits[unitId] : 0
+        getExenLost(unitId) {
+            return this.attributes.target.extractors.stolen[unitId] ? this.attributes.target.extractors.stolen[unitId] : 0
         },
         getTargetBefore(unitId) {
-            return this.before.target[unitId] ? this.before.target[unitId] : 0
+            return this.attributes.target.fleets.before[0].units[unitId] ? this.attributes.target.fleets.before[0].units[unitId] : 0
         },
         getTargetAfter(unitId) {
-            return this.after.target[unitId] ? this.after.target[unitId] : 0
+            return this.attributes.target.fleets.after[0].units[unitId] ? this.attributes.target.fleets.after[0].units[unitId] : 0
         },
-        getSumResourcesCost(fleet) {
+        getTargetLost(unitId) {
+            return this.attributes.target.fleets.after[0].losses[unitId] ? this.attributes.target.fleets.after[0].losses[unitId] : 0
+        },
+        getTargetCosts(ressourceId) {
+            return this.attributes.target.fleets.after[0].resources.cost[ressourceId] ? this.attributes.target.fleets.after[0].resources.cost[ressourceId] : 0
+        },
+        getSumTargetCosts() {
+            let _this = this
             let sum = 0
-            for (let ID in this.RESOURCES) {
-                let RESOURCE = this.RESOURCES[ID]
-                sum += fleet[RESOURCE.COST]
-            }
-
+            Object.keys(config.RESOURCES).forEach((ressourceId) => {
+                sum += _this.attributes.target.fleets.after[0].resources.cost[ressourceId] ? _this.attributes.target.fleets.after[0].resources.cost[ressourceId] : 0
+            })
             return sum
         },
-        getSumResourcesSalvage(fleet) {
+        getTargetBR(ressourceId) {
+            return this.attributes.target.resources.salvaged[ressourceId] ? this.attributes.target.resources.salvaged[ressourceId] : 0
+        },
+        getSumTargetBR() {
+            let _this = this
             let sum = 0
-            for (let ID in this.RESOURCES) {
-                let RESOURCE = this.RESOURCES[ID]
-                sum += fleet[RESOURCE.SALVAGE]
-            }
-
+            Object.keys(config.RESOURCES).forEach((ressourceId) => {
+                sum += _this.attributes.target.resources.salvaged[ressourceId] ? _this.attributes.target.resources.salvaged[ressourceId] : 0
+            })
             return sum
         },
-        getSumExen() {
+        getSumTargetProfit() {
+            return this.getSumTargetBR() - this.getSumTargetCosts()
+        },
+        getAttackerBefore(unitId) {
+            return this.attributes.attackers[0].fleets.before[0].units[unitId] ? this.attributes.attackers[0].fleets.before[0].units[unitId] : 0
+        },
+        getAttackerAfter(unitId) {
+            return this.attributes.attackers[0].fleets.after[0].units[unitId] ? this.attributes.attackers[0].fleets.after[0].units[unitId] : 0
+        },
+        getAttackerLost(unitId) {
+            return this.attributes.attackers[0].fleets.after[0].losses[unitId] ? this.attributes.attackers[0].fleets.after[0].losses[unitId] : 0
+        },
+        getAttackerCosts(ressourceId) {
+            return this.attributes.attackers[0].fleets.after[0].resources.cost[ressourceId] ? this.attributes.attackers[0].fleets.after[0].resources.cost[ressourceId] : 0
+        },
+        getSumAttackerCosts() {
+            let _this = this
             let sum = 0
-            for (let ID in this.EXEN) {
-                let EXE = this.EXEN[ID]
-                sum += this.after.attacker[0][EXE.AFTERFALSE]
-            }
-
+            Object.keys(config.RESOURCES).forEach((res) => {
+                sum += _this.attributes.attackers[0].fleets.after[0].resources.cost[res] ? _this.attributes.attackers[0].fleets.after[0].resources.cost[res] : 0
+            })
             return sum
         },
-        getCostsPerExe() {
-            let exen = this.getSumExen()
+        getAttackerExenStolen(unitId) {
+            return this.attributes.attackers[0].fleets.after[0].extractors.stolen[unitId] ? this.attributes.attackers[0].fleets.after[0].extractors.stolen[unitId] : 0
+        },
+        getSumAttackerExenStolen() {
+            let _this = this
+            let sum = 0
+            Object.keys(config.EXEN).forEach((exe) => {
+                sum += _this.attributes.attackers[0].fleets.after[0].extractors.stolen[exe] ? _this.attributes.attackers[0].fleets.after[0].extractors.stolen[exe] : 0
+            })
+            return sum
+        },
+        getAttackerCostsPerExe() {
+            let exen = this.getSumAttackerExenStolen()
             if (exen > 0) {
-                return Math.round(this.getSumResourcesCost(this.after.attacker[0]) / exen)
+                return Math.round(this.getSumAttackerCosts() / exen)
             } else {
                 return 0
             }
-        },
-        getCostSalveTotal() {
-            let cost = this.getSumResourcesCost(this.after.defender[0])
-            let br = this.getSumResourcesSalvage(this.after.defender[0])
-
-            return br - cost
         },
     },
 }

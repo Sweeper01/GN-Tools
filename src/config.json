@@ -1,173 +1,153 @@
 {
    "UNITS": {
-      "1": {
-         "ID": "1",
+      "JA": {
+         "ID": "JA",
          "NAME": "Jäger",
          "SHORT": "JÄ"
       },
-      "2": {
-         "ID": "2",
+      "BO": {
+         "ID": "BO",
          "NAME": "Bomber",
          "SHORT": "BO"
       },
-      "3": {
-         "ID": "3",
+      "FR": {
+         "ID": "FR",
          "NAME": "Fregatte",
          "SHORT": "FR"
       },
-      "4": {
-         "ID": "4",
+      "ZE": {
+         "ID": "ZE",
          "NAME": "Zerstörer",
          "SHORT": "ZE"
       },
-      "5": {
-         "ID": "5",
+      "KR": {
+         "ID": "KR",
          "NAME": "Kreuzer",
          "SHORT": "KR"
       },
-      "6": {
-         "ID": "6",
+      "SS": {
+         "ID": "SS",
          "NAME": "Schlachtschiff",
          "SHORT": "SS"
       },
-      "7": {
-         "ID": "7",
+      "TR": {
+         "ID": "TR",
          "NAME": "Trägerschiff",
          "SHORT": "TR"
       },
-      "8": {
-         "ID": "8",
+      "CL": {
+         "ID": "CL",
          "NAME": "Kaperschiff",
          "SHORT": "CL"
       },
-      "9": {
-         "ID": "9",
+      "CA": {
+         "ID": "CA",
          "NAME": "Schutzschiff",
          "SHORT": "CA"
       }
    },
    "ORB": {
-      "10": {
-         "ID": "10",
+      "LO": {
+         "ID": "LO",
          "NAME": "Rubium",
          "SHORT": "LO"
       },
-      "11": {
-         "ID": "11",
+      "LR": {
+         "ID": "LR",
          "NAME": "Pulsar",
          "SHORT": "LR"
       },
-      "12": {
-         "ID": "12",
+      "MR": {
+         "ID": "MR",
          "NAME": "Coon",
          "SHORT": "MR"
       },
-      "13": {
-         "ID": "13",
+      "SR": {
+         "ID": "SR",
          "NAME": "Centurion",
          "SHORT": "SR"
       },
-      "14": {
-         "ID": "14",
+      "AJ": {
+         "ID": "AJ",
          "NAME": "Abfangjäger",
          "SHORT": "AJ"
       }
    },
    "EXEN": {
-      "extractorsMetal": {
-         "ID": "extractorsMetal",
+      "metal": {
+         "ID": "metal",
          "SHORT": "M",
-         "NAME": "Metall Exen",
-         "AFTER": "stolenExtractorsMetal",
-         "AFTERFALSE": "stolenMetalExtractors"
+         "NAME": "Metall Exen"
       },
-      "extractorsCrystal": {
-         "ID": "extractorsCrystal",
+      "crystal": {
+         "ID": "crystal",
          "SHORT": "K",
-         "NAME": "Kristall Exen",
-         "AFTER": "stolenExtractorsCrystal",
-         "AFTERFALSE": "stolenCrystalExtractors"
+         "NAME": "Kristall Exen"
       }
    },
    "RESOURCES": {
-      "METALL": {
-         "ID": "Metall",
-         "NAME": "Metall",
-         "COST": "costForNewConstructionMetal",
-         "SALVAGE": "salvagedMetal"
+      "metal": {
+         "ID": "metal",
+         "NAME": "Metall"
       },
-      "KRISTALL": {
-         "ID": "Kristall",
-         "NAME": "Kristall",
-         "COST": "costForNewConstructionCrystal",
-         "SALVAGE": "salvagedCrystal"
-      }
-   },
-   "FLEETTYPES": {
-      "BC": {
-         "ORBIT": ["9"],
-         "FLEET1": ["1","2","3","4","5","6","7"],
-         "FLEET2": ["8"]
-      },
-      "CO": {
-         "ORBIT": ["1","2","3","4","5","6","7","9"],
-         "FLEET1": ["8"],
-         "FLEET2": []
+      "crystal": {
+         "ID": "crystal",
+         "NAME": "Kristall"
       }
    },
    "MAP": {
-      "jaeger": "1",
-      "jäger": "1",
-      "jä": "1",
-      "leo": "1",
-      "bomber": "2",
-      "bo": "2",
-      "aquilae": "2",
-      "fregatte": "3",
-      "fregatten": "3",
-      "fr": "3",
-      "fornax": "3",
-      "zerstörer": "4",
-      "zerstoerer": "4",
-      "ze": "4",
-      "draco": "4",
-      "kreuzer": "5",
-      "kr": "5",
-      "goron": "5",
-      "schlachtschiff": "6",
-      "schlachtschiffe": "6",
-      "schlachter": "6",
-      "ss": "6",
-      "pentalin": "6",
-      "trägerschiff": "7",
-      "trägerschiffe": "7",
-      "träger": "7",
-      "traegerschiff": "7",
-      "traegerschiffe": "7",
-      "traeger": "7",
-      "tr": "7",
-      "zenit": "7",
-      "kaperschiff": "8",
-      "kaperschiffe": "8",
-      "cl": "8",
-      "cleptor": "8",
-      "kleptoren": "8",
-      "schutzschiff": "9",
-      "schutzschiffe": "9",
-      "ca": "9",
-      "cancri": "9",
-      "cancris": "9",
-      "rubium": "10",
-      "lo": "10",
-      "pulsar": "11",     
-      "lr": "11",     
-      "coon": "12",
-      "mr": "12",
-      "centurion": "13",
-      "sr": "13",
-      "horus": "14",
-      "aj": "14",
-      "m-extraktoren": "extractorsMetal",
-      "k-extraktoren": "extractorsCrystal"
+      "jaeger": "JA",
+      "jäger": "JA",
+      "jä": "JA",
+      "leo": "JA",
+      "bomber": "BO",
+      "bo": "BO",
+      "aquilae": "BO",
+      "fregatte": "FR",
+      "fregatten": "FR",
+      "fr": "FR",
+      "fornax": "FR",
+      "zerstörer": "ZE",
+      "zerstoerer": "ZE",
+      "ze": "ZE",
+      "draco": "ZE",
+      "kreuzer": "KR",
+      "kr": "KR",
+      "goron": "KR",
+      "schlachtschiff": "SS",
+      "schlachtschiffe": "SS",
+      "schlachter": "SS",
+      "ss": "SS",
+      "pentalin": "SS",
+      "trägerschiff": "TR",
+      "trägerschiffe": "TR",
+      "träger": "TR",
+      "traegerschiff": "TR",
+      "traegerschiffe": "TR",
+      "traeger": "TR",
+      "tr": "TR",
+      "zenit": "TR",
+      "kaperschiff": "CL",
+      "kaperschiffe": "CL",
+      "cl": "CL",
+      "cleptor": "CL",
+      "kleptoren": "CL",
+      "schutzschiff": "CA",
+      "schutzschiffe": "CA",
+      "ca": "CA",
+      "cancri": "CA",
+      "cancris": "CA",
+      "rubium": "LO",
+      "lo": "LO",
+      "pulsar": "LR",     
+      "lr": "LR",     
+      "coon": "MR",
+      "mr": "MR",
+      "centurion": "SR",
+      "sr": "SR",
+      "horus": "AJ",
+      "aj": "AJ",
+      "m-extraktoren": "metal",
+      "k-extraktoren": "crystal"
    }
 }
