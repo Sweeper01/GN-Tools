@@ -35,7 +35,7 @@ import GnUser from '@/components/GnUser'
 import config from '@/config.json'
 import axios from 'axios'
 
-import test from '@/test.json'
+// import test from '@/test.json'
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-case-declarations */
 export default {
@@ -270,8 +270,6 @@ export default {
         },
         simulate: async function () {
             // let _this = this
-
-            console.log('SIMULATE!')
             let cfg = {
                 headers: {
                     Accept: 'application/vnd.api+json;version=1.0',
@@ -297,8 +295,8 @@ export default {
         },
     },
     mounted: function () {
-        console.warn(test.SCANS)
-        this.users = test.SCANS
+        // console.warn(test.SCANS)
+        // this.users = test.SCANS
 
         let _this = this
         this.$root.$on('selectDuration', (id, fleet, duration) => {
@@ -310,7 +308,6 @@ export default {
             user.fleet[fleet].delay = delay
         })
         this.$root.$on('changeType', (id, type) => {
-            console.warn(id)
             let newtype = type
             switch (type) {
                 case 0:
@@ -327,7 +324,6 @@ export default {
             }
             let user = _this.users.find((u) => u.id == id)
             if (user) {
-                console.warn(user, user.id, user.name)
                 user.type = newtype
             }
         })

@@ -77,7 +77,6 @@ export default {
             result.nr = cords[1]
             result.id = header[2] + '§' + cords[0] + '§' + cords[1]
 
-            console.log(type)
             // MILISCAN
             if (type == 'miliscan') {
                 // Im Orbit: 20 Jäger - 1000 Bomber - 500 Träger - 2000 Cancris
@@ -104,7 +103,6 @@ export default {
 
             if (type == 'sektorscan') {
                 //M-Extraktoren: 19534 - K-Extraktoren: 3700
-                console.log(lines[3])
                 if (lines[3] && lines[3].length > 0) {
                     result.exen = this.getExenFromSektor(lines[3])
                 }

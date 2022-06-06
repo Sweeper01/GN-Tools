@@ -271,7 +271,7 @@ export default {
                         user = { id: atk.name, fleets: [] }
                         users.push(user)
                     }
-                    console.warn(i, atk.name, users, user)
+
                     atk.fleets.before.forEach((fleet) => {
                         if (!user.fleets.find((f) => f == fleet.name)) {
                             user.fleets.push(fleet.name)

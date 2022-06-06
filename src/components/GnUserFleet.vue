@@ -87,7 +87,6 @@ export default {
         },
         delay: {
             set(delay) {
-                console.log("delay", this.user.id, this.user)
                 this.$root.$emit('selectDelay', this.user.id, this.fleet, delay)
             },
             get() {
