@@ -19,23 +19,23 @@
                                         <th>Nachher</th>
                                         <th>Verluste</th>
                                     </thead>
-                                    <tr v-for="UNIT in UNITS" :key="UNIT.ID">
+                                    <tr v-for="UNIT in UNITS" :key="'dShip' + UNIT.ID">
                                         <td>{{ UNIT.NAME }}</td>
                                         <td>{{ format(getDefenderBefore(UNIT.ID)) }}</td>
-                                        <td>{{ format(getDefenderBefore(UNIT.ID) - getDefenderLost(UNIT.ID)) }}</td>
+                                        <td>{{ format(getDefenderAfter(UNIT.ID)) }}</td>
                                         <td>{{ format(getDefenderLost(UNIT.ID)) }}</td>
                                     </tr>
-                                    <tr v-for="UNIT in ORB" :key="UNIT.ID">
+                                    <tr v-for="UNIT in ORB" :key="'dOrb' + UNIT.ID">
                                         <td>{{ UNIT.NAME }}</td>
                                         <td>{{ format(getDefenderBefore(UNIT.ID)) }}</td>
-                                        <td>{{ format(getDefenderBefore(UNIT.ID) - getDefenderLost(UNIT.ID)) }}</td>
+                                        <td>{{ format(getDefenderAfter(UNIT.ID)) }}</td>
                                         <td>{{ format(getDefenderLost(UNIT.ID)) }}</td>
                                     </tr>
-                                    <tr v-for="UNIT in EXEN" :key="UNIT.ID">
+                                    <tr v-for="UNIT in EXEN" :key="'dExe' + UNIT.ID">
                                         <td>{{ UNIT.NAME }}</td>
-                                        <td>{{ format(getTargetBefore(UNIT.ID)) }}</td>
-                                        <td>{{ format(getTargetAfter(UNIT.ID)) }}</td>
-                                        <td>{{ format(getTargetAfter(UNIT.AFTER)) }}</td>
+                                        <td>{{ format(getExenBefore(UNIT.ID)) }}</td>
+                                        <td>{{ format(getExenAfter(UNIT.ID)) }}</td>
+                                        <td>{{ format(getExenLost(UNIT.ID)) }}</td>
                                     </tr>
                                 </table>
                             </v-col>
@@ -48,28 +48,28 @@
                                     <thead>
                                         <th colspan="2">Kosten</th>
                                     </thead>
-                                    <tr v-for="RESOURCE in RESOURCES" :key="RESOURCE.ID">
+                                    <tr v-for="RESOURCE in RESOURCES" :key="'dRes' + RESOURCE.ID">
                                         <td>{{ RESOURCE.NAME + ':' }}</td>
-                                        <td>{{ format(after.defender[0][RESOURCE.COST]) }}</td>
+                                        <td>{{ format(getDefenderCosts(RESOURCE.ID)) }}</td>
                                     </tr>
                                     <tr>
                                         <td>Summe:</td>
-                                        <td>{{ format(getSumResourcesCost(after.defender[0])) }}</td>
+                                        <td>{{ format(getSumDefenderCosts()) }}</td>
                                     </tr>
                                     <thead>
                                         <th colspan="2">Bergungsressourcen</th>
                                     </thead>
-                                    <tr v-for="RESOURCE in RESOURCES" :key="RESOURCE.ID + '1'">
+                                    <tr v-for="RESOURCE in RESOURCES" :key="'dBRes' + RESOURCE.ID + '1'">
                                         <td>{{ RESOURCE.NAME + ':' }}</td>
-                                        <td>{{ format(after.defender[0][RESOURCE.SALVAGE]) }}</td>
+                                        <td>{{ format(getDefenderBR(RESOURCE.ID)) }}</td>
                                     </tr>
                                     <tr>
                                         <td>Summe:</td>
-                                        <td>{{ format(getSumResourcesSalvage(after.defender[0])) }}</td>
+                                        <td>{{ format(getSumDefenderBR()) }}</td>
                                     </tr>
                                     <tr>
-                                        <td>{{ getCostSalveTotal() >= 0 ? 'Gewinn:' : 'Verlust:' }}</td>
-                                        <td>{{ format(getCostSalveTotal()) }}</td>
+                                        <td>{{ getSumDefenderProfit() >= 0 ? 'Gewinn:' : 'Verlust:' }}</td>
+                                        <td>{{ format(getSumDefenderProfit()) }}</td>
                                     </tr>
                                 </table>
                             </v-col>
@@ -92,10 +92,10 @@
                                         <th>Nachher</th>
                                         <th>Verluste</th>
                                     </thead>
-                                    <tr v-for="UNIT in UNITS" :key="UNIT.ID">
+                                    <tr v-for="UNIT in UNITS" :key="'aShip' + UNIT.ID">
                                         <td>{{ UNIT.NAME }}</td>
                                         <td>{{ format(getAttackerBefore(UNIT.ID)) }}</td>
-                                        <td>{{ format(getAttackerBefore(UNIT.ID) - getAttackerLost(UNIT.ID)) }}</td>
+                                        <td>{{ format(getAttackerAfter(UNIT.ID)) }}</td>
                                         <td>{{ format(getAttackerLost(UNIT.ID)) }}</td>
                                     </tr>
                                 </table>
@@ -109,28 +109,28 @@
                                     <thead>
                                         <th colspan="2">Kosten</th>
                                     </thead>
-                                    <tr v-for="RESOURCE in RESOURCES" :key="RESOURCE.ID">
+                                    <tr v-for="RESOURCE in RESOURCES" :key="'aRes' + RESOURCE.ID">
                                         <td>{{ RESOURCE.NAME + ':' }}</td>
-                                        <td>{{ format(after.attacker[0][RESOURCE.COST]) }}</td>
+                                        <td>{{ format(getAttackerCosts(RESOURCE.ID)) }}</td>
                                     </tr>
                                     <tr>
                                         <td>Summe:</td>
-                                        <td>{{ format(getSumResourcesCost(after.attacker[0])) }}</td>
+                                        <td>{{ format(getSumAttackerCosts()) }}</td>
                                     </tr>
                                     <thead>
                                         <th colspan="2">Exen</th>
                                     </thead>
-                                    <tr v-for="EXE in EXEN" :key="EXE.ID">
+                                    <tr v-for="EXE in EXEN" :key="'aExe' + EXE.ID">
                                         <td>{{ EXE.NAME + ':' }}</td>
-                                        <td>{{ format(after.attacker[0][EXE.AFTERFALSE]) }}</td>
+                                        <td>{{ format(getAttackerExenStolen(EXE.ID)) }}</td>
                                     </tr>
                                     <tr>
                                         <td>Summe:</td>
-                                        <td>{{ format(getSumExen()) }}</td>
+                                        <td>{{ format(getSumAttackerExenStolen()) }}</td>
                                     </tr>
                                     <tr>
                                         <td>Kosten pro Exe:</td>
-                                        <td>{{ format(getCostsPerExe()) }}</td>
+                                        <td>{{ format(getAttackerCostsPerExe()) }}</td>
                                     </tr>
                                 </table>
                             </v-col>
@@ -183,127 +183,172 @@ export default {
         },
     },
     computed: {
-        attributes: function () {
-            return this.result.data.attributes
-        },
         total: function () {
+            let _this = this
+
             let total = {
-                before: {
-                    target: {
-                        extractorsMetal: 0,
-                        extractorsCrystal: 0,
+                target: {
+                    name: 'Verteidiger',
+                    extractors: {
+                        before: {},
+                        after: {},
+                        stolen: {},
                     },
-                    attacker: [
-                        {
-                            name: 'Angreifer',
-                            units: {},
-                        },
-                    ],
-                    defender: [
-                        {
-                            name: 'Verteidiger',
-                            units: {},
-                        },
-                    ],
-                },
-                after: {
-                    target: {
-                        extractorsMetal: 0,
-                        extractorsCrystal: 0,
-                        stolenExtractorsMetal: 0,
-                        stolenExtractorsCrystal: 0,
+                    fleets: {
+                        before: [
+                            {
+                                name: '0',
+                                units: {},
+                            },
+                        ],
+                        after: [
+                            {
+                                name: '0',
+                                units: {},
+                                losses: {},
+                                destroyed: {},
+                                resources: {
+                                    cost: {},
+                                },
+                            },
+                        ],
                     },
-                    attacker: [
-                        {
-                            name: 'Angreifer',
-                            lostUnits: {},
-                            costForNewConstructionMetal: 0,
-                            costForNewConstructionCrystal: 0,
-                            stolenMetalExtractors: 0,
-                            stolenCrystalExtractors: 0,
-                        },
-                    ],
-                    defender: [
-                        {
-                            name: 'Verteidiger',
-                            lostUnits: {},
-                            costForNewConstructionMetal: 0,
-                            costForNewConstructionCrystal: 0,
-                            salvagedMetal: 0,
-                            salvagedCrystal: 0,
-                        },
-                    ],
+                    resources: {
+                        salvaged: {},
+                    },
                 },
+                attackers: [
+                    {
+                        name: 'Angreifer',
+                        fleets: {
+                            before: [
+                                {
+                                    name: '0',
+                                    units: {},
+                                },
+                            ],
+                            after: [
+                                {
+                                    name: '0',
+                                    units: {},
+                                    losses: {},
+                                    destroyed: {},
+                                    resources: {
+                                        cost: {},
+                                    },
+                                    extractors: {
+                                        stolen: {},
+                                    },
+                                },
+                            ],
+                        },
+                    },
+                ],
             }
 
-            total.before.target.extractorsMetal = this.attributes.before.target.extractorsMetal
-            total.before.target.extractorsCrystal = this.attributes.before.target.extractorsCrystal
+            let result = this.result.data.attributes
 
-            this.attributes.before.attacker.forEach((atk) => {
-                for (let unitId in atk.units) {
-                    let unit = atk.units[unitId]
-                    if (total.before.attacker[0].units[unitId]) {
-                        total.before.attacker[0].units[unitId] += unit
-                    } else {
-                        total.before.attacker[0].units[unitId] = unit
-                    }
-                }
-            })
-            this.attributes.before.defender.forEach((dfd) => {
-                for (let unitId in dfd.units) {
-                    let unit = dfd.units[unitId]
-                    if (total.before.defender[0].units[unitId]) {
-                        total.before.defender[0].units[unitId] += unit
-                    } else {
-                        total.before.defender[0].units[unitId] = unit
-                    }
-                }
+            Object.keys(config.EXEN).forEach((exe) => {
+                total.target.extractors.before[exe] = result.target.extractors.before[exe]
             })
 
-            total.after.target.extractorsMetal = this.attributes.after.target.extractorsMetal
-            total.after.target.extractorsCrystal = this.attributes.after.target.extractorsCrystal
-            total.after.target.stolenExtractorsMetal += this.attributes.after.target.stolenExtractorsMetal
-            total.after.target.stolenExtractorsCrystal += this.attributes.after.target.stolenExtractorsCrystal
-
-            this.attributes.after.attacker.forEach((atk) => {
-                total.after.attacker[0].costForNewConstructionMetal += atk.costForNewConstructionMetal
-                total.after.attacker[0].costForNewConstructionCrystal += atk.costForNewConstructionCrystal
-                total.after.attacker[0].stolenMetalExtractors += atk.stolenMetalExtractors
-                total.after.attacker[0].stolenCrystalExtractors += atk.stolenCrystalExtractors
-
-                for (let unitId in atk.lostUnits) {
-                    let unit = atk.lostUnits[unitId]
-                    if (total.after.attacker[0].lostUnits[unitId]) {
-                        total.after.attacker[0].lostUnits[unitId] += unit
-                    } else {
-                        total.after.attacker[0].lostUnits[unitId] = unit
-                    }
-                }
+            result.target.fleets.before.forEach((dfd) => {
+                Object.keys(dfd.units).forEach((u) => {
+                    _this.add(total.target.fleets.before[0].units, u, dfd.units[u])
+                })
             })
 
-            this.attributes.after.defender.forEach((dfd) => {
-                total.after.defender[0].costForNewConstructionMetal += dfd.costForNewConstructionMetal
-                total.after.defender[0].costForNewConstructionCrystal += dfd.costForNewConstructionCrystal
-                total.after.defender[0].salvagedMetal += dfd.salvagedMetal
-                total.after.defender[0].salvagedCrystal += dfd.salvagedCrystal
-
-                for (let unitId in dfd.lostUnits) {
-                    let unit = dfd.lostUnits[unitId]
-                    if (total.after.defender[0].lostUnits[unitId]) {
-                        total.after.defender[0].lostUnits[unitId] += unit
-                    } else {
-                        total.after.defender[0].lostUnits[unitId] = unit
-                    }
-                }
+            result.defenders.forEach((dfd) => {
+                dfd.fleets.before.forEach((fleet) => {
+                    Object.keys(fleet.units).forEach((u) => {
+                        _this.add(total.target.fleets.before[0].units, u, fleet.units[u])
+                    })
+                })
             })
 
-            let out = {
-                data: {
-                    type: 'combat-results',
-                    attributes: total,
-                },
-            }
-            return out
+            result.attackers.forEach((atk) => {
+                atk.fleets.before.forEach((fleet) => {
+                    Object.keys(fleet.units).forEach((u) => {
+                        _this.add(total.attackers[0].fleets.before[0].units, u, fleet.units[u])
+                    })
+                })
+            })
+
+            Object.keys(config.EXEN).forEach((exe) => {
+                total.target.extractors.after[exe] = result.target.extractors.after[exe]
+                total.target.extractors.stolen[exe] = result.target.extractors.stolen[exe]
+            })
+
+            Object.keys(config.RESOURCES).forEach((res) => {
+                total.target.resources.salvaged[res] = result.target.resources.salvaged[res]
+            })
+
+            result.target.fleets.after.forEach((dfd) => {
+                Object.keys(dfd.units).forEach((u) => {
+                    _this.add(total.target.fleets.after[0].units, u, dfd.units[u])
+                })
+
+                Object.keys(dfd.losses).forEach((u) => {
+                    _this.add(total.target.fleets.after[0].losses, u, dfd.losses[u])
+                })
+
+                Object.keys(dfd.destroyed).forEach((u) => {
+                    _this.add(total.target.fleets.after[0].destroyed, u, dfd.destroyed[u])
+                })
+
+                Object.keys(config.RESOURCES).forEach((res) => {
+                    // _this.add(total.target.fleets.after[0].resources.salvaged, res, dfd.resources.salvaged[res])
+                    _this.add(total.target.fleets.after[0].resources.cost, res, dfd.resources.cost[res])
+                })
+            })
+
+            result.defenders.forEach((dfd) => {
+                dfd.fleets.after.forEach((fleet) => {
+                    Object.keys(fleet.units).forEach((u) => {
+                        _this.add(total.target.fleets.after[0].units, u, fleet.units[u])
+                    })
+
+                    Object.keys(fleet.losses).forEach((u) => {
+                        _this.add(total.target.fleets.after[0].losses, u, fleet.losses[u])
+                    })
+
+                    Object.keys(fleet.destroyed).forEach((u) => {
+                        _this.add(total.target.fleets.after[0].destroyed, u, fleet.destroyed[u])
+                    })
+
+                    Object.keys(config.RESOURCES).forEach((res) => {
+                        _this.add(total.target.resources.salvaged, res, fleet.resources.salvaged[res])
+                        _this.add(total.target.fleets.after[0].resources.cost, res, fleet.resources.cost[res])
+                    })
+                })
+            })
+
+            result.attackers.forEach((atk) => {
+                atk.fleets.after.forEach((fleet) => {
+                    Object.keys(fleet.units).forEach((u) => {
+                        _this.add(total.attackers[0].fleets.after[0].units, u, fleet.units[u])
+                    })
+
+                    Object.keys(fleet.losses).forEach((u) => {
+                        _this.add(total.attackers[0].fleets.after[0].losses, u, fleet.losses[u])
+                    })
+
+                    Object.keys(fleet.destroyed).forEach((u) => {
+                        _this.add(total.attackers[0].fleets.after[0].destroyed, u, fleet.destroyed[u])
+                    })
+
+                    Object.keys(config.RESOURCES).forEach((res) => {
+                        // _this.add(total.attackers[0].fleets.after[0].resources.salvaged, res, fleet.resources.salvaged[res])
+                        _this.add(total.attackers[0].fleets.after[0].resources.cost, res, fleet.resources.cost[res])
+                    })
+
+                    Object.keys(config.EXEN).forEach((exe) => {
+                        _this.add(total.attackers[0].fleets.after[0].extractors.stolen, exe, fleet.extractors.stolen[exe])
+                    })
+                })
+            })
+
+            return total
         },
         UNITS: function () {
             return config.UNITS
@@ -316,78 +361,101 @@ export default {
         },
         RESOURCES: function () {
             return config.RESOURCES
-        },
-        before: function () {
-            return this.total.data.attributes.before
-            // return this.result.data.attributes.before
-        },
-        after: function () {
-            return this.total.data.attributes.after
-            // return this.result.data.attributes.after
-        },
+        }
     },
     methods: {
         format(number) {
             return Number(number).toLocaleString()
         },
-        getAttackerBefore(unitId) {
-            return this.before.attacker[0].units[unitId] ? this.before.attacker[0].units[unitId] : 0
+        getExenBefore(unitId) {
+            return this.total.target.extractors.before[unitId] ? this.total.target.extractors.before[unitId] : 0
         },
-        getAttackerLost(unitId) {
-            return this.after.attacker[0].lostUnits[unitId] ? this.after.attacker[0].lostUnits[unitId] : 0
+        getExenAfter(unitId) {
+            return this.total.target.extractors.after[unitId] ? this.total.target.extractors.after[unitId] : 0
+        },
+        getExenLost(unitId) {
+            return this.total.target.extractors.stolen[unitId] ? this.total.target.extractors.stolen[unitId] : 0
         },
         getDefenderBefore(unitId) {
-            return this.before.defender[0].units[unitId] ? this.before.defender[0].units[unitId] : 0
+            return this.total.target.fleets.before[0].units[unitId] ? this.total.target.fleets.before[0].units[unitId] : 0
+        },
+        getDefenderAfter(unitId) {
+            return this.total.target.fleets.after[0].units[unitId] ? this.total.target.fleets.after[0].units[unitId] : 0
         },
         getDefenderLost(unitId) {
-            return this.after.defender[0].lostUnits[unitId] ? this.after.defender[0].lostUnits[unitId] : 0
+            return this.total.target.fleets.after[0].losses[unitId] ? this.total.target.fleets.after[0].losses[unitId] : 0
         },
-        getTargetBefore(unitId) {
-            return this.before.target[unitId] ? this.before.target[unitId] : 0
+        getDefenderCosts(ressourceId) {
+            return this.total.target.fleets.after[0].resources.cost[ressourceId] ? this.total.target.fleets.after[0].resources.cost[ressourceId] : 0
         },
-        getTargetAfter(unitId) {
-            return this.after.target[unitId] ? this.after.target[unitId] : 0
-        },
-        getSumResourcesCost(fleet) {
+        getSumDefenderCosts() {
+            let _this = this
             let sum = 0
-            for (let ID in this.RESOURCES) {
-                let RESOURCE = this.RESOURCES[ID]
-                sum += fleet[RESOURCE.COST]
-            }
-
+            Object.keys(config.RESOURCES).forEach((ressourceId) => {
+                sum += _this.total.target.fleets.after[0].resources.cost[ressourceId] ? _this.total.target.fleets.after[0].resources.cost[ressourceId] : 0
+            })
             return sum
         },
-        getSumResourcesSalvage(fleet) {
+        getDefenderBR(ressourceId) {
+            return this.total.target.resources.salvaged[ressourceId] ? this.total.target.resources.salvaged[ressourceId] : 0
+        },
+        getSumDefenderBR() {
+            let _this = this
             let sum = 0
-            for (let ID in this.RESOURCES) {
-                let RESOURCE = this.RESOURCES[ID]
-                sum += fleet[RESOURCE.SALVAGE]
-            }
-
+            Object.keys(config.RESOURCES).forEach((ressourceId) => {
+                sum += _this.total.target.resources.salvaged[ressourceId] ? _this.total.target.resources.salvaged[ressourceId] : 0
+            })
             return sum
         },
-        getSumExen() {
+        getSumDefenderProfit() {
+            return this.getSumDefenderBR() - this.getSumDefenderCosts()
+        },
+        getAttackerBefore(unitId) {
+            return this.total.attackers[0].fleets.before[0].units[unitId] ? this.total.attackers[0].fleets.before[0].units[unitId] : 0
+        },
+        getAttackerAfter(unitId) {
+            return this.total.attackers[0].fleets.after[0].units[unitId] ? this.total.attackers[0].fleets.after[0].units[unitId] : 0
+        },
+        getAttackerLost(unitId) {
+            return this.total.attackers[0].fleets.after[0].losses[unitId] ? this.total.attackers[0].fleets.after[0].losses[unitId] : 0
+        },
+        getAttackerCosts(ressourceId) {
+            return this.total.attackers[0].fleets.after[0].resources.cost[ressourceId] ? this.total.attackers[0].fleets.after[0].resources.cost[ressourceId] : 0
+        },
+        getSumAttackerCosts() {
+            let _this = this
             let sum = 0
-            for (let ID in this.EXEN) {
-                let EXE = this.EXEN[ID]
-                sum += this.after.attacker[0][EXE.AFTERFALSE]
-            }
-
+            Object.keys(config.RESOURCES).forEach((res) => {
+                sum += _this.total.attackers[0].fleets.after[0].resources.cost[res] ? _this.total.attackers[0].fleets.after[0].resources.cost[res] : 0
+            })
             return sum
         },
-        getCostsPerExe() {
-            let exen = this.getSumExen()
+        getAttackerExenStolen(unitId) {
+            return this.total.attackers[0].fleets.after[0].extractors.stolen[unitId] ? this.total.attackers[0].fleets.after[0].extractors.stolen[unitId] : 0
+        },
+        getSumAttackerExenStolen() {
+            let _this = this
+            let sum = 0
+            Object.keys(config.EXEN).forEach((exe) => {
+                sum += _this.total.attackers[0].fleets.after[0].extractors.stolen[exe] ? _this.total.attackers[0].fleets.after[0].extractors.stolen[exe] : 0
+            })
+            return sum
+        },
+        getAttackerCostsPerExe() {
+            let exen = this.getSumAttackerExenStolen()
             if (exen > 0) {
-                return Math.round(this.getSumResourcesCost(this.after.attacker[0]) / exen)
+                return Math.round(this.getSumAttackerCosts() / exen)
             } else {
                 return 0
             }
         },
-        getCostSalveTotal() {
-            let cost = this.getSumResourcesCost(this.after.defender[0])
-            let br = this.getSumResourcesSalvage(this.after.defender[0])
+        add: function (obj, attr, number) {
+            if (obj[attr] == undefined) {
+                obj[attr] = 0
+            }
+            obj[attr] += number
 
-            return br - cost
+            return obj
         },
     },
 }

@@ -7,10 +7,10 @@
                 </v-row>
                 <v-divider class="mb-5"></v-divider>
                 <v-row>
-                    <v-col v-for="scan in scans" :key="scan.id" cols="12" sm="4" md="3" lg="2">
-                        <gn-scan :scan="scan" :type="scan.type"></gn-scan>
+                    <v-col v-for="user in users" :key="user.id" cols="12" sm="4" md="3" lg="2">
+                        <gn-user :user="user" :type="user.type"></gn-user>
                     </v-col>
-                    <v-col cols="12" sm="4" md="3" lg="2"><gn-add-fleet :add="addFleet"></gn-add-fleet></v-col>
+                    <v-col cols="12" sm="4" md="3" lg="2"><gn-add-fleet :add="addUser"></gn-add-fleet></v-col>
                 </v-row>
                 <v-row class="mt-5">
                     <v-col cols="6" md="2">
@@ -31,7 +31,7 @@
 <script>
 import GnCombatResults from '@/components/GnCombatResults'
 import GnAddFleet from '@/components/GnAddFleet'
-import GnScan from '@/components/GnScan'
+import GnUser from '@/components/GnUser'
 import config from '@/config.json'
 import axios from 'axios'
 
@@ -44,12 +44,12 @@ export default {
     components: {
         GnCombatResults,
         GnAddFleet,
-        GnScan,
+        GnUser,
     },
 
     data: () => ({
-        scan: '',
-        scans: [],
+        user: '',
+        users: [],
         ticks: 5,
         results: [],
     }),
@@ -65,24 +65,8 @@ export default {
         },
     },
     methods: {
-        addFleet: function (scan) {
-            this.scans.push(scan)
-        },
-        getFleet: function (id) {
-            return this.scans.find((sc) => sc.id == id)
-        },
-        simulate: async function () {
-            // let _this = this
-
-            console.log('SIMULATE!')
-            let cfg = {
-                headers: {
-                    Accept: 'application/vnd.api+json;version=1.0',
-                    'Content-Type': 'application/json',
-                },
-            }
-
-            let request = {
+        getNewRequestObj: function () {
+            return {
                 data: {
                     type: 'combats',
                     attributes: {
@@ -98,112 +82,214 @@ export default {
                     },
                 },
             }
+        },
+        getNewTargetObj: function (id) {
+            return {
+                name: '' + id,
+                fleets: [],
+                extractors: {
+                    metal: 0,
+                    crystal: 0,
+                },
+            }
+        },
+        getNewUserObj: function (id) {
+            return {
+                name: '' + id,
+                fleets: [],
+            }
+        },
+        addUser: function (user) {
+            this.users.push(user)
+        },
+        getUserByID: function (id) {
+            return this.users.find((u) => u.id == id)
+        },
+        getNewUsers: function (tick) {
+            let _this = this
 
-            this.results = []
-            for (let i = 0; i < this.ticks; i++) {
-                try {
-                    this.scans.forEach(function (scan) {
-                        switch (scan.type) {
-                            case 0:
-                                request.data.attributes.target.name = "" + scan.id
+            let users = {
+                target: undefined,
+                attackers: [],
+                defenders: [],
+            }
 
-                                Object.keys(config.EXEN).forEach((exe) => {
-                                    request.data.attributes.target.extractors[exe] = parseInt(scan.exen[exe])
-                                })
+            this.users.forEach(function (user) {
+                switch (user.type) {
+                    case 0:
+                        if (tick == 0) {
+                            let target = _this.getNewTargetObj(user.id)
 
-                                for (let f = 0; f <= 2; f++) {
-                                    let fleet = {
-                                        name: "" + f,
-                                        units: f == 0 ? { ...scan.fleet[f].units, ...scan.orb } : { ...scan.fleet[f].units },
-                                    }
+                            Object.keys(config.EXEN).forEach((exe) => {
+                                target.extractors[exe] = parseInt(user.exen[exe])
+                            })
 
-                                    if (Object.keys(fleet.units).length > 0) {
-                                        request.data.attributes.target.fleets.push(fleet)
-                                    }
-                                }
-                                break
-                            case 1:
-                                let defender = {
-                                    name: "" + scan.id,
-                                    fleets: [],
-                                }
-
-                                for (let f = 0; f <= 2; f++) {
-                                    let fleet = {
-                                        name: "" + f,
-                                        units: { ...scan.fleet[f].units },
-                                        calculateCarrierCapacityLosses: i == scan.fleet[f].delay + scan.fleet[f].duration ? true : false,
-                                    }
-
-                                    if (i == scan.fleet[f].delay) {
-                                        if (Object.keys(fleet.units).length > 0) {
-                                            defender.fleets.push(fleet)
-                                        }
-                                    }
-                                }
-
-                                if (defender.fleets.length > 0) {
-                                    request.data.attributes.defenders.push(defender)
-                                }
-
-                                break
-                            case 2:
-                                let attacker = {
-                                    name: "" + scan.id,
-                                    fleets: [],
+                            for (let f = 0; f <= 2; f++) {
+                                let fleet = {
+                                    name: '' + f,
+                                    units: f == 0 ? { ...user.fleet[f].units, ...user.orb } : { ...user.fleet[f].units },
                                 }
 
-                                for (let f = 0; f <= 2; f++) {
-                                    let fleet = {
-                                        name: "" + f,
-                                        units: { ...scan.fleet[f].units },
-                                        calculateCarrierCapacityLosses: i == scan.fleet[f].delay + scan.fleet[f].duration ? true : false,
-                                    }
-
-                                    if (i == scan.fleet[f].delay) {
-                                        if (Object.keys(fleet.units).length > 0) {
-                                            attacker.fleets.push(fleet)
-                                        }
-                                    }
+                                if (Object.keys(fleet.units).length > 0) {
+                                    target.fleets.push(fleet)
                                 }
+                            }
 
-                                if (attacker.fleets.length > 0) {
-                                    request.data.attributes.attackers.push(attacker)
+                            users.target = target
+                        }
+                        break
+                    case 1:
+                        let defender = _this.getNewUserObj(user.id)
+
+                        for (let f = 0; f <= 2; f++) {
+                            let fleet = {
+                                name: '' + f,
+                                units: { ...user.fleet[f].units },
+                                calculateCarrierCapacityLosses: user.fleet[f].delay + user.fleet[f].duration == tick + 1 ? true : false,
+                            }
+
+                            if (user.fleet[f].delay == tick) {
+                                if (Object.keys(fleet.units).length > 0) {
+                                    defender.fleets.push(fleet)
                                 }
-                                break
+                            }
+                        }
+
+                        if (defender.fleets.length > 0) {
+                            users.defenders.push(defender)
+                        }
+
+                        break
+                    case 2:
+                        let attacker = _this.getNewUserObj(user.id)
+
+                        for (let f = 0; f <= 2; f++) {
+                            let fleet = {
+                                name: '' + f,
+                                units: { ...user.fleet[f].units },
+                                calculateCarrierCapacityLosses: user.fleet[f].delay + user.fleet[f].duration == tick + 1 ? true : false,
+                            }
+
+                            if (user.fleet[f].delay == tick) {
+                                if (Object.keys(fleet.units).length > 0) {
+                                    attacker.fleets.push(fleet)
+                                }
+                            }
+                        }
+
+                        if (attacker.fleets.length > 0) {
+                            users.attackers.push(attacker)
+                        }
+                        break
+                }
+            })
+
+            return users
+        },
+        getNextRequest: function (result, tick) {
+            let _this = this
+
+            let request = this.getNewRequestObj()
+
+            //new Users
+            let users = this.getNewUsers(tick)
+            if (users.target) {
+                request.data.attributes.target = users.target
+            }
+            request.data.attributes.defenders = users.defenders
+            request.data.attributes.attackers = users.attackers
+
+            //From last Request
+            if (result) {
+                let attributes = result.data.attributes
+
+                attributes.target.fleets.after.forEach((fleet) => {
+                    request.data.attributes.target.fleets.push({
+                        name: fleet.name,
+                        units: fleet.units,
+                    })
+                })
+
+                Object.keys(config.EXEN).forEach((exe) => {
+                    request.data.attributes.target.extractors[exe] = attributes.target.extractors.after[exe]
+                })
+
+                attributes.defenders.forEach((dfd) => {
+                    let defender = this.getNewUserObj(dfd.name)
+
+                    dfd.fleets.after.forEach((fleet) => {
+                        let user = _this.getUserByID(dfd.name)
+                        let endtick = user.fleet[fleet.name].delay + user.fleet[fleet.name].duration
+
+                        if (tick == endtick) {
+                            return
+                        }
+
+                        if (user.fleet[fleet.name].delay + user.fleet[fleet.name].duration > tick) {
+                            defender.fleets.push({
+                                name: fleet.name,
+                                units: { ...fleet.units },
+                                calculateCarrierCapacityLosses: user.fleet[fleet.name].delay + user.fleet[fleet.name].duration == tick + 1 ? true : false,
+                            })
                         }
                     })
 
+                    if (defender.fleets.length > 0) {
+                        request.data.attributes.defenders.push(defender)
+                    }
+                })
+
+                //Attackers from Response
+                attributes.attackers.forEach((atk) => {
+                    let attacker = this.getNewUserObj(atk.name)
+
+                    atk.fleets.after.forEach((fleet) => {
+                        let user = _this.getUserByID(atk.name)
+                        let endtick = user.fleet[fleet.name].delay + user.fleet[fleet.name].duration
+
+                        if (tick == endtick) {
+                            return
+                        }
+
+                        if (user.fleet[fleet.name].delay + user.fleet[fleet.name].duration > tick) {
+                            attacker.fleets.push({
+                                name: fleet.name,
+                                units: { ...fleet.units },
+                                calculateCarrierCapacityLosses: user.fleet[fleet.name].delay + user.fleet[fleet.name].duration == tick + 1 ? true : false,
+                            })
+                        }
+                    })
+
+                    if (attacker.fleets.length > 0) {
+                        request.data.attributes.attackers.push(attacker)
+                    }
+                })
+            }
+
+            return request
+        },
+        simulate: async function () {
+            // let _this = this
+
+            console.log('SIMULATE!')
+            let cfg = {
+                headers: {
+                    Accept: 'application/vnd.api+json;version=1.0',
+                    'Content-Type': 'application/json',
+                },
+            }
+
+            this.results = []
+            let lastResult = undefined
+
+            for (let i = 0; i < this.ticks; i++) {
+                try {
+                    let request = this.getNextRequest(lastResult, i)
+
                     let response = await axios.post('https://galactic-conquest.de/api/combats', request, cfg)
-                    let result = response.data
-                    this.results.push({ tick: i + 1, data: result })
 
-                    // request.data.attributes.target.extractorsMetal = result.data.attributes.after.target.extractorsMetal
-                    // request.data.attributes.target.extractorsCrystal = result.data.attributes.after.target.extractorsCrystal
-                    // request.data.attributes.attacker = result.data.attributes.after.attacker.filter(function (fleet) {
-                    //     let name = fleet.name.split('%')
-                    //     let id = name[0]
-                    //     let fleetnr = name[1]
-                    //     let scan = _this.getFleet(id)
-
-                    //     let endtick = scan.fleet[fleetnr].delay + scan.fleet[fleetnr].duration
-
-                    //     return i + 1 < endtick
-                    // })
-                    // request.data.attributes.defender = result.data.attributes.after.defender.filter(function (fleet) {
-                    //     let name = fleet.name.split('%')
-                    //     let id = name[0]
-                    //     let fleetnr = name[1]
-                    //     let scan = _this.getFleet(id)
-
-                    //     if (scan.type == 0) {
-                    //         return true
-                    //     } else {
-                    //         let endtick = scan.fleet[fleetnr].delay + scan.fleet[fleetnr].duration
-
-                    //         return i + 1 < endtick
-                    //     }
-                    // })
+                    lastResult = response.data
+                    this.results.push({ tick: i + 1, request: request, response: lastResult })
                 } catch (e) {
                     console.warn(e)
                 }
@@ -212,16 +298,16 @@ export default {
     },
     mounted: function () {
         console.warn(test.SCANS)
-        this.scans = test.SCANS
+        this.users = test.SCANS
 
         let _this = this
         this.$root.$on('selectDuration', (id, fleet, duration) => {
-            let scan = _this.scans.find((s) => s.id == id)
-            scan.fleet[fleet].duration = duration
+            let user = _this.users.find((u) => u.id == id)
+            user.fleet[fleet].duration = duration
         })
         this.$root.$on('selectDelay', (id, fleet, delay) => {
-            let scan = _this.scans.find((s) => s.id == id)
-            scan.fleet[fleet].delay = delay
+            let user = _this.users.find((u) => u.id == id)
+            user.fleet[fleet].delay = delay
         })
         this.$root.$on('changeType', (id, type) => {
             console.warn(id)
@@ -239,10 +325,10 @@ export default {
                 default:
                     break
             }
-            let scan = _this.scans.find((s) => s.id == id)
-            if (scan) {
-                console.warn(scan, scan.id, scan.name)
-                scan.type = newtype
+            let user = _this.users.find((u) => u.id == id)
+            if (user) {
+                console.warn(user, user.id, user.name)
+                user.type = newtype
             }
         })
     },
