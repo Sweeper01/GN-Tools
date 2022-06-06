@@ -203,67 +203,71 @@ export default {
             if (result) {
                 let attributes = result.data.attributes
 
-                attributes.target.fleets.after.forEach((fleet) => {
-                    request.data.attributes.target.fleets.push({
-                        name: fleet.name,
-                        units: fleet.units,
-                    })
-                })
-
-                Object.keys(config.EXEN).forEach((exe) => {
-                    request.data.attributes.target.extractors[exe] = attributes.target.extractors.after[exe]
-                })
-
-                attributes.defenders.forEach((dfd) => {
-                    let defender = this.getNewUserObj(dfd.name)
-
-                    dfd.fleets.after.forEach((fleet) => {
-                        let user = _this.getUserByID(dfd.name)
-                        let endtick = user.fleet[fleet.name].delay + user.fleet[fleet.name].duration
-
-                        if (tick == endtick) {
-                            return
-                        }
-
-                        if (user.fleet[fleet.name].delay + user.fleet[fleet.name].duration > tick) {
-                            defender.fleets.push({
-                                name: fleet.name,
-                                units: { ...fleet.units },
-                                calculateCarrierCapacityLosses: user.fleet[fleet.name].delay + user.fleet[fleet.name].duration == tick + 1 ? true : false,
-                            })
-                        }
+                if (attributes.target) {
+                    attributes.target.fleets.after.forEach((fleet) => {
+                        request.data.attributes.target.fleets.push({
+                            name: fleet.name,
+                            units: fleet.units,
+                        })
                     })
 
-                    if (defender.fleets.length > 0) {
-                        request.data.attributes.defenders.push(defender)
-                    }
-                })
+                    Object.keys(config.EXEN).forEach((exe) => {
+                        request.data.attributes.target.extractors[exe] = attributes.target.extractors.after[exe]
+                    })
+                }
 
-                //Attackers from Response
-                attributes.attackers.forEach((atk) => {
-                    let attacker = this.getNewUserObj(atk.name)
+                if (attributes.defenders) {
+                    attributes.defenders.forEach((dfd) => {
+                        let defender = this.getNewUserObj(dfd.name)
 
-                    atk.fleets.after.forEach((fleet) => {
-                        let user = _this.getUserByID(atk.name)
-                        let endtick = user.fleet[fleet.name].delay + user.fleet[fleet.name].duration
+                        dfd.fleets.after.forEach((fleet) => {
+                            let user = _this.getUserByID(dfd.name)
+                            let endtick = user.fleet[fleet.name].delay + user.fleet[fleet.name].duration
 
-                        if (tick == endtick) {
-                            return
-                        }
+                            if (tick == endtick) {
+                                return
+                            }
 
-                        if (user.fleet[fleet.name].delay + user.fleet[fleet.name].duration > tick) {
-                            attacker.fleets.push({
-                                name: fleet.name,
-                                units: { ...fleet.units },
-                                calculateCarrierCapacityLosses: user.fleet[fleet.name].delay + user.fleet[fleet.name].duration == tick + 1 ? true : false,
-                            })
+                            if (user.fleet[fleet.name].delay + user.fleet[fleet.name].duration > tick) {
+                                defender.fleets.push({
+                                    name: fleet.name,
+                                    units: { ...fleet.units },
+                                    calculateCarrierCapacityLosses: user.fleet[fleet.name].delay + user.fleet[fleet.name].duration == tick + 1 ? true : false,
+                                })
+                            }
+                        })
+
+                        if (defender.fleets.length > 0) {
+                            request.data.attributes.defenders.push(defender)
                         }
                     })
+                }
+                if (attributes.attackers) {
+                    attributes.attackers.forEach((atk) => {
+                        let attacker = this.getNewUserObj(atk.name)
 
-                    if (attacker.fleets.length > 0) {
-                        request.data.attributes.attackers.push(attacker)
-                    }
-                })
+                        atk.fleets.after.forEach((fleet) => {
+                            let user = _this.getUserByID(atk.name)
+                            let endtick = user.fleet[fleet.name].delay + user.fleet[fleet.name].duration
+
+                            if (tick == endtick) {
+                                return
+                            }
+
+                            if (user.fleet[fleet.name].delay + user.fleet[fleet.name].duration > tick) {
+                                attacker.fleets.push({
+                                    name: fleet.name,
+                                    units: { ...fleet.units },
+                                    calculateCarrierCapacityLosses: user.fleet[fleet.name].delay + user.fleet[fleet.name].duration == tick + 1 ? true : false,
+                                })
+                            }
+                        })
+
+                        if (attacker.fleets.length > 0) {
+                            request.data.attributes.attackers.push(attacker)
+                        }
+                    })
+                }
             }
 
             return request

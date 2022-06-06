@@ -252,101 +252,113 @@ export default {
                 total.target.extractors.before[exe] = result.target.extractors.before[exe]
             })
 
-            result.target.fleets.before.forEach((dfd) => {
-                Object.keys(dfd.units).forEach((u) => {
-                    _this.add(total.target.fleets.before[0].units, u, dfd.units[u])
-                })
-            })
-
-            result.defenders.forEach((dfd) => {
-                dfd.fleets.before.forEach((fleet) => {
-                    Object.keys(fleet.units).forEach((u) => {
-                        _this.add(total.target.fleets.before[0].units, u, fleet.units[u])
+            if (result.target) {
+                //before
+                result.target.fleets.before.forEach((dfd) => {
+                    Object.keys(dfd.units).forEach((u) => {
+                        _this.add(total.target.fleets.before[0].units, u, dfd.units[u])
                     })
                 })
-            })
 
-            result.attackers.forEach((atk) => {
-                atk.fleets.before.forEach((fleet) => {
-                    Object.keys(fleet.units).forEach((u) => {
-                        _this.add(total.attackers[0].fleets.before[0].units, u, fleet.units[u])
+                //after
+                result.target.fleets.after.forEach((dfd) => {
+                    Object.keys(dfd.units).forEach((u) => {
+                        _this.add(total.target.fleets.after[0].units, u, dfd.units[u])
+                    })
+
+                    Object.keys(dfd.losses).forEach((u) => {
+                        _this.add(total.target.fleets.after[0].losses, u, dfd.losses[u])
+                    })
+
+                    Object.keys(dfd.destroyed).forEach((u) => {
+                        _this.add(total.target.fleets.after[0].destroyed, u, dfd.destroyed[u])
+                    })
+
+                    Object.keys(config.RESOURCES).forEach((res) => {
+                        // _this.add(total.target.fleets.after[0].resources.salvaged, res, dfd.resources.salvaged[res])
+                        _this.add(total.target.fleets.after[0].resources.cost, res, dfd.resources.cost[res])
                     })
                 })
-            })
 
-            Object.keys(config.EXEN).forEach((exe) => {
-                total.target.extractors.after[exe] = result.target.extractors.after[exe]
-                total.target.extractors.stolen[exe] = result.target.extractors.stolen[exe]
-            })
-
-            Object.keys(config.RESOURCES).forEach((res) => {
-                total.target.resources.salvaged[res] = result.target.resources.salvaged[res]
-            })
-
-            result.target.fleets.after.forEach((dfd) => {
-                Object.keys(dfd.units).forEach((u) => {
-                    _this.add(total.target.fleets.after[0].units, u, dfd.units[u])
-                })
-
-                Object.keys(dfd.losses).forEach((u) => {
-                    _this.add(total.target.fleets.after[0].losses, u, dfd.losses[u])
-                })
-
-                Object.keys(dfd.destroyed).forEach((u) => {
-                    _this.add(total.target.fleets.after[0].destroyed, u, dfd.destroyed[u])
+                Object.keys(config.EXEN).forEach((exe) => {
+                    total.target.extractors.after[exe] = result.target.extractors.after[exe]
+                    total.target.extractors.stolen[exe] = result.target.extractors.stolen[exe]
                 })
 
                 Object.keys(config.RESOURCES).forEach((res) => {
-                    // _this.add(total.target.fleets.after[0].resources.salvaged, res, dfd.resources.salvaged[res])
-                    _this.add(total.target.fleets.after[0].resources.cost, res, dfd.resources.cost[res])
+                    total.target.resources.salvaged[res] = result.target.resources.salvaged[res]
                 })
-            })
+            }
 
-            result.defenders.forEach((dfd) => {
-                dfd.fleets.after.forEach((fleet) => {
-                    Object.keys(fleet.units).forEach((u) => {
-                        _this.add(total.target.fleets.after[0].units, u, fleet.units[u])
-                    })
-
-                    Object.keys(fleet.losses).forEach((u) => {
-                        _this.add(total.target.fleets.after[0].losses, u, fleet.losses[u])
-                    })
-
-                    Object.keys(fleet.destroyed).forEach((u) => {
-                        _this.add(total.target.fleets.after[0].destroyed, u, fleet.destroyed[u])
-                    })
-
-                    Object.keys(config.RESOURCES).forEach((res) => {
-                        _this.add(total.target.resources.salvaged, res, fleet.resources.salvaged[res])
-                        _this.add(total.target.fleets.after[0].resources.cost, res, fleet.resources.cost[res])
+            if (result.defenders) {
+                //before
+                result.defenders.forEach((dfd) => {
+                    dfd.fleets.before.forEach((fleet) => {
+                        Object.keys(fleet.units).forEach((u) => {
+                            _this.add(total.target.fleets.before[0].units, u, fleet.units[u])
+                        })
                     })
                 })
-            })
 
-            result.attackers.forEach((atk) => {
-                atk.fleets.after.forEach((fleet) => {
-                    Object.keys(fleet.units).forEach((u) => {
-                        _this.add(total.attackers[0].fleets.after[0].units, u, fleet.units[u])
-                    })
+                //after
+                result.defenders.forEach((dfd) => {
+                    dfd.fleets.after.forEach((fleet) => {
+                        Object.keys(fleet.units).forEach((u) => {
+                            _this.add(total.target.fleets.after[0].units, u, fleet.units[u])
+                        })
 
-                    Object.keys(fleet.losses).forEach((u) => {
-                        _this.add(total.attackers[0].fleets.after[0].losses, u, fleet.losses[u])
-                    })
+                        Object.keys(fleet.losses).forEach((u) => {
+                            _this.add(total.target.fleets.after[0].losses, u, fleet.losses[u])
+                        })
 
-                    Object.keys(fleet.destroyed).forEach((u) => {
-                        _this.add(total.attackers[0].fleets.after[0].destroyed, u, fleet.destroyed[u])
-                    })
+                        Object.keys(fleet.destroyed).forEach((u) => {
+                            _this.add(total.target.fleets.after[0].destroyed, u, fleet.destroyed[u])
+                        })
 
-                    Object.keys(config.RESOURCES).forEach((res) => {
-                        // _this.add(total.attackers[0].fleets.after[0].resources.salvaged, res, fleet.resources.salvaged[res])
-                        _this.add(total.attackers[0].fleets.after[0].resources.cost, res, fleet.resources.cost[res])
-                    })
-
-                    Object.keys(config.EXEN).forEach((exe) => {
-                        _this.add(total.attackers[0].fleets.after[0].extractors.stolen, exe, fleet.extractors.stolen[exe])
+                        Object.keys(config.RESOURCES).forEach((res) => {
+                            _this.add(total.target.resources.salvaged, res, fleet.resources.salvaged[res])
+                            _this.add(total.target.fleets.after[0].resources.cost, res, fleet.resources.cost[res])
+                        })
                     })
                 })
-            })
+            }
+
+            if (result.attackers) {
+                //before
+                result.attackers.forEach((atk) => {
+                    atk.fleets.before.forEach((fleet) => {
+                        Object.keys(fleet.units).forEach((u) => {
+                            _this.add(total.attackers[0].fleets.before[0].units, u, fleet.units[u])
+                        })
+                    })
+                })
+
+                //after
+                result.attackers.forEach((atk) => {
+                    atk.fleets.after.forEach((fleet) => {
+                        Object.keys(fleet.units).forEach((u) => {
+                            _this.add(total.attackers[0].fleets.after[0].units, u, fleet.units[u])
+                        })
+
+                        Object.keys(fleet.losses).forEach((u) => {
+                            _this.add(total.attackers[0].fleets.after[0].losses, u, fleet.losses[u])
+                        })
+
+                        Object.keys(fleet.destroyed).forEach((u) => {
+                            _this.add(total.attackers[0].fleets.after[0].destroyed, u, fleet.destroyed[u])
+                        })
+
+                        Object.keys(config.RESOURCES).forEach((res) => {
+                            // _this.add(total.attackers[0].fleets.after[0].resources.salvaged, res, fleet.resources.salvaged[res])
+                            _this.add(total.attackers[0].fleets.after[0].resources.cost, res, fleet.resources.cost[res])
+                        })
+
+                        Object.keys(config.EXEN).forEach((exe) => {
+                            _this.add(total.attackers[0].fleets.after[0].extractors.stolen, exe, fleet.extractors.stolen[exe])
+                        })
+                    })
+                })
+            }
 
             return total
         },
@@ -361,7 +373,7 @@ export default {
         },
         RESOURCES: function () {
             return config.RESOURCES
-        }
+        },
     },
     methods: {
         format(number) {

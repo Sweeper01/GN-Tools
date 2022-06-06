@@ -224,6 +224,8 @@ export default {
                 Object.keys(scan.fleet[i].units).forEach((u) => (scan.fleet[i].units[u] = parseInt(scan.fleet[i].units[u])))
             }
 
+            Object.keys(scan.orb).forEach((u) => (scan.orb[u] = parseInt(scan.orb[u])))
+
             return scan
         },
         submit: function () {
