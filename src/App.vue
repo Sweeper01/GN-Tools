@@ -121,7 +121,7 @@ export default {
                             let target = _this.getNewTargetObj(user.id)
 
                             Object.keys(config.EXEN).forEach((exe) => {
-                                target.extractors[exe] = parseInt(user.exen[exe])
+                                target.extractors[exe] = user.exen[exe] ? parseInt(user.exen[exe]) : 0
                             })
 
                             for (let f = 0; f <= 2; f++) {
