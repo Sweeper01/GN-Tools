@@ -8,7 +8,7 @@
                 <v-divider class="mb-5"></v-divider>
                 <v-row>
                     <v-col v-for="user in users" :key="user.id" cols="12" sm="4" md="3" lg="2">
-                        <gn-user :user="user" :type="user.type"></gn-user>
+                        <gn-user :user="user" :type="user.type" :deleteUser="deleteUser"></gn-user>
                     </v-col>
                     <v-col cols="12" sm="4" md="3" lg="2"><gn-add-fleet :add="addUser"></gn-add-fleet></v-col>
                 </v-row>
@@ -101,6 +101,10 @@ export default {
         },
         addUser: function (user) {
             this.users.push(user)
+        },
+        deleteUser: function (user) {
+            let index = this.users.findIndex((u) => u.id == user.id)
+            this.users.splice(index,1)
         },
         getUserByID: function (id) {
             return this.users.find((u) => u.id == id)
