@@ -50,7 +50,7 @@
                         </div>
                     </v-col>
                 </v-row>
-                <v-row no-gutters v-if="type != 0">
+                <v-row no-gutters v-if="type != 0 && Object.keys(user.fleet[1].units).length > 0">
                     <v-col>
                         <gn-user-fleet-settings :user="user" :fleet="1"></gn-user-fleet-settings>
                     </v-col>
@@ -63,7 +63,7 @@
                         </div>
                     </v-col>
                 </v-row>
-                <v-row no-gutters v-if="type != 0">
+                <v-row no-gutters v-if="type != 0 && Object.keys(user.fleet[2].units).length > 0">
                     <v-col>
                         <gn-user-fleet-settings :user="user" :fleet="2"></gn-user-fleet-settings>
                     </v-col>
@@ -167,7 +167,7 @@ export default {
     flex-direction: row;
 }
 .gn-user-header span {
-    padding: 3px 5px 2px 5px;
+    padding: 3px 17px 2px 5px;
     font-weight: 800;
     font-size: 12px;
     float: left;

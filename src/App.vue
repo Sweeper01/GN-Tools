@@ -35,7 +35,7 @@ import GnUser from '@/components/GnUser'
 import config from '@/config.json'
 import axios from 'axios'
 
-// import test from '@/test.json'
+import test from '@/test.json'
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-case-declarations */
 export default {
@@ -65,7 +65,7 @@ export default {
         },
     },
     methods: {
-        getNewRequestObj: function () {
+        getNewRequestObj: function (mode = 0) {
             return {
                 data: {
                     type: 'combats',
@@ -79,6 +79,9 @@ export default {
                         },
                         attackers: [],
                         defenders: [],
+                        config: {
+                            mode: mode,
+                        },
                     },
                 },
             }
@@ -104,21 +107,152 @@ export default {
         },
         deleteUser: function (user) {
             let index = this.users.findIndex((u) => u.id == user.id)
-            this.users.splice(index,1)
+            this.users.splice(index, 1)
         },
         getUserByID: function (id) {
             return this.users.find((u) => u.id == id)
         },
-        getNewUsers: function (tick) {
+        getCombatMode: function (fleet) {
+            let mode = 0
+            if (fleet) {
+                Object.keys(fleet.units).forEach((u) => {
+                    if (config.ORB[u] && config.ORB[u].PRETICKS && config.ORB[u].PRETICKS > mode) {
+                        mode = config.ORB[u].PRETICKS
+                    }
+                })
+            }
+            return mode
+        },
+        updateUsers: function (users, lastResult) {
             let _this = this
 
-            let users = {
+            if (lastResult && lastResult.data.attributes.attackers) {
+                lastResult.data.attributes.attackers.forEach((atk) => {
+                    let userIndex = users.findIndex((u) => u.id == atk.name)
+                    if (userIndex > -1) {
+                        atk.fleets.after.forEach((f) => {
+                            Object.keys(users[userIndex].fleet).forEach((uf) => {
+                                if (uf == f.name) {
+                                    users[userIndex].fleet[uf].units = f.units
+                                }
+                            })
+                        })
+                    }
+                })
+            }
+            if (lastResult && lastResult.data.attributes.target) {
+                let userIndex = users.findIndex((u) => u.id == lastResult.data.attributes.target.name)
+                if (userIndex > -1) {
+                    let oldUser = users[userIndex]
+                    let user = lastResult.data.attributes.target
+
+                    let target = {
+                        id: oldUser.id,
+                        name: oldUser.name,
+                        type: oldUser.type,
+                        exen: {},
+                        orb: {},
+                        fleet: {}
+                    }
+
+                    Object.keys(config.EXEN).forEach((exe) => {
+                        target.exen[exe] = user.extractors.after[exe]
+                    })
+
+                    lastResult.data.attributes.target.fleets.after.forEach((fleet) => {
+                        let oldFleet = oldUser.fleet[fleet.name]
+
+                        let newFleet = {
+                            units: {},
+                            delay: oldFleet.delay,
+                            duration: oldFleet.duration
+                        }
+
+                        Object.keys(fleet.units).forEach((unit) => {
+                            if(config.ORB[unit]){
+                                target.orb[unit] = fleet.units[unit]
+                            }
+                            else {
+                                newFleet.units[unit] = fleet.units[unit]
+                            }
+                        })
+
+                        target.fleet[fleet.name] = newFleet
+                    })
+
+                    users[userIndex] = target
+                }
+            }
+        },
+        getPreTickUsers: function (users, tick) {
+            let _this = this
+
+            let newUsers = {
                 target: undefined,
                 attackers: [],
                 defenders: [],
             }
 
-            this.users.forEach(function (user) {
+            users.forEach(function (user) {
+                switch (user.type) {
+                    case 0:
+                        let target = _this.getNewTargetObj(user.id)
+
+                        Object.keys(config.EXEN).forEach((exe) => {
+                            target.extractors[exe] = user.exen[exe] ? parseInt(user.exen[exe]) : 0
+                        })
+
+                        for (let f = 0; f <= 2; f++) {
+                            let fleet = {
+                                name: '' + f,
+                                units: f == 0 ? { ...user.fleet[f].units, ...user.orb } : { ...user.fleet[f].units },
+                            }
+
+                            if (Object.keys(fleet.units).length > 0) {
+                                target.fleets.push(fleet)
+                            }
+                        }
+
+                        newUsers.target = target
+                        break
+                    case 1:
+                        break
+                    case 2:
+                        let attacker = _this.getNewUserObj(user.id)
+
+                        for (let f = 0; f <= 2; f++) {
+                            let fleet = {
+                                name: '' + f,
+                                units: { ...user.fleet[f].units },
+                                calculateCarrierCapacityLosses: user.fleet[f].delay + user.fleet[f].duration == tick + 1 ? true : false,
+                            }
+
+                            if (user.fleet[f].delay == tick) {
+                                if (Object.keys(fleet.units).length > 0) {
+                                    attacker.fleets.push(fleet)
+                                }
+                            }
+                        }
+
+                        if (attacker.fleets.length > 0) {
+                            newUsers.attackers.push(attacker)
+                        }
+                        break
+                }
+            })
+
+            return newUsers
+        },
+        getNewUsers: function (users, tick) {
+            let _this = this
+
+            let newUsers = {
+                target: undefined,
+                attackers: [],
+                defenders: [],
+            }
+
+            users.forEach(function (user) {
                 switch (user.type) {
                     case 0:
                         if (tick == 0) {
@@ -139,7 +273,7 @@ export default {
                                 }
                             }
 
-                            users.target = target
+                            newUsers.target = target
                         }
                         break
                     case 1:
@@ -160,7 +294,7 @@ export default {
                         }
 
                         if (defender.fleets.length > 0) {
-                            users.defenders.push(defender)
+                            newUsers.defenders.push(defender)
                         }
 
                         break
@@ -182,26 +316,34 @@ export default {
                         }
 
                         if (attacker.fleets.length > 0) {
-                            users.attackers.push(attacker)
+                            newUsers.attackers.push(attacker)
                         }
                         break
                 }
             })
 
-            return users
+            return newUsers
         },
-        getNextRequest: function (result, tick) {
-            let _this = this
-
-            let request = this.getNewRequestObj()
+        getNextPreTickRequest: function (newUsers, mode) {
+            let request = this.getNewRequestObj(mode)
 
             //new Users
-            let users = this.getNewUsers(tick)
-            if (users.target) {
-                request.data.attributes.target = users.target
+            request.data.attributes.target = newUsers.target
+            request.data.attributes.attackers = request.data.attributes.attackers.concat(newUsers.attackers)
+
+            return request
+        },
+        getNextRequest: function (result, tick, newUsers, mode) {
+            let _this = this
+
+            let request = this.getNewRequestObj(mode)
+
+            //new Users
+            if (newUsers.target && !result) {
+                request.data.attributes.target = newUsers.target
             }
-            request.data.attributes.defenders = users.defenders
-            request.data.attributes.attackers = users.attackers
+            request.data.attributes.defenders = newUsers.defenders
+            request.data.attributes.attackers = newUsers.attackers
 
             //From last Request
             if (result) {
@@ -248,9 +390,20 @@ export default {
                 }
                 if (attributes.attackers) {
                     attributes.attackers.forEach((atk) => {
+                        let atkIndex = newUsers.attackers.findIndex((a) => a.name == atk.name)
+
                         let attacker = this.getNewUserObj(atk.name)
 
                         atk.fleets.after.forEach((fleet) => {
+                            let fleetIndex = -1
+                            if (atkIndex > -1) {
+                                fleetIndex = newUsers.attackers[atkIndex].fleets.findIndex((f) => f.name == fleet.name)
+                            }
+
+                            if (fleetIndex > -1) {
+                                return
+                            }
+
                             let user = _this.getUserByID(atk.name)
                             let endtick = user.fleet[fleet.name].delay + user.fleet[fleet.name].duration
 
@@ -285,17 +438,56 @@ export default {
                 },
             }
 
+            let combatUsers = JSON.parse(JSON.stringify(this.users))
+            // this.users.forEach((u) => {
+            //     combatUsers.push(Object.assign({}, u))
+            // })
+
+            let newUsers = this.getNewUsers(combatUsers, 0)
+            let mode = this.getCombatMode(newUsers.target.fleets[0])
+
             this.results = []
             let lastResult = undefined
+            let request = undefined
+            let response = undefined
 
-            for (let i = 0; i < this.ticks; i++) {
+            for (let i = -2; i < this.ticks; i++) {
                 try {
-                    let request = this.getNextRequest(lastResult, i)
+                    let newUsers = this.getNewUsers(combatUsers, i)
 
-                    let response = await axios.post('https://galactic-conquest.de/api/combats', request, cfg)
+                    //Main Combat Tick
+                    if ((newUsers.target || newUsers.defenders.length > 0 || newUsers.attackers.length > 0 || lastResult) && i >= 0) {
+                        request = this.getNextRequest(lastResult, i, newUsers, 0)
+                        response = await axios.post('https://galactic-conquest.de/api/combats', request, cfg)
+                        lastResult = response.data
+                        this.updateUsers(combatUsers, response.data)
+                        this.results.push({ tick: i + 1, request: request, response: lastResult, mode: 0 })
+                    }
 
-                    lastResult = response.data
-                    this.results.push({ tick: i + 1, request: request, response: lastResult })
+                    //Pre Ticks
+                    if (lastResult) {
+                        mode = this.getCombatMode(lastResult.data.attributes.target.fleets.after[0])
+                    }
+                    if (mode > 1) {
+                        //Pre Tick 2
+                        newUsers = this.getPreTickUsers(combatUsers, i + 2)
+                        if (newUsers.attackers.length > 0) {
+                            request = this.getNextPreTickRequest(newUsers, 2)
+                            response = await axios.post('https://galactic-conquest.de/api/combats', request, cfg)
+                            this.updateUsers(combatUsers, response.data)
+                            this.results.push({ tick: i + 1, request: request, response: response.data, mode: 2 })
+                        }
+                    }
+                    if (mode > 0) {
+                        //Pre Tick 1
+                        newUsers = this.getPreTickUsers(combatUsers, i + 1)
+                        if (newUsers.attackers.length > 0) {
+                            request = this.getNextPreTickRequest(newUsers, 1)
+                            response = await axios.post('https://galactic-conquest.de/api/combats', request, cfg)
+                            this.updateUsers(combatUsers, response.data)
+                            this.results.push({ tick: i + 1, request: request, response: response.data, mode: 1 })
+                        }
+                    }
                 } catch (e) {
                     console.warn(e)
                 }
@@ -303,8 +495,8 @@ export default {
         },
     },
     mounted: function () {
-        // console.warn(test.SCANS)
-        // this.users = test.SCANS
+        console.warn(test.SCANS)
+        this.users = test.SCANS
 
         let _this = this
         this.$root.$on('selectDuration', (id, fleet, duration) => {

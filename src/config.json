@@ -55,17 +55,20 @@
       "LR": {
          "ID": "LR",
          "NAME": "Pulsar",
-         "SHORT": "LR"
+         "SHORT": "LR",
+         "PRETICKS": 1
       },
       "MR": {
          "ID": "MR",
          "NAME": "Coon",
-         "SHORT": "MR"
+         "SHORT": "MR",
+         "PRETICKS": 1
       },
       "SR": {
          "ID": "SR",
          "NAME": "Centurion",
-         "SHORT": "SR"
+         "SHORT": "SR",
+         "PRETICKS": 2
       },
       "AJ": {
          "ID": "AJ",
