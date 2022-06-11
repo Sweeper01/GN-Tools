@@ -35,7 +35,7 @@ import GnUser from '@/components/GnUser'
 import config from '@/config.json'
 import axios from 'axios'
 
-import test from '@/test.json'
+// import test from '@/test.json'
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-case-declarations */
 export default {
@@ -152,7 +152,11 @@ export default {
                         type: oldUser.type,
                         exen: {},
                         orb: {},
-                        fleet: {}
+                        fleet: {
+                            0: {},
+                            1: {},
+                            2: {}
+                        }
                     }
 
                     Object.keys(config.EXEN).forEach((exe) => {
@@ -439,9 +443,6 @@ export default {
             }
 
             let combatUsers = JSON.parse(JSON.stringify(this.users))
-            // this.users.forEach((u) => {
-            //     combatUsers.push(Object.assign({}, u))
-            // })
 
             let newUsers = this.getNewUsers(combatUsers, 0)
             let mode = this.getCombatMode(newUsers.target.fleets[0])
@@ -495,8 +496,8 @@ export default {
         },
     },
     mounted: function () {
-        console.warn(test.SCANS)
-        this.users = test.SCANS
+        // console.warn(test.SCANS)
+        // this.users = test.SCANS
 
         let _this = this
         this.$root.$on('selectDuration', (id, fleet, duration) => {
