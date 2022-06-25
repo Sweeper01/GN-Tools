@@ -1,6 +1,7 @@
 <template>
     <div>
         <!-- v-if="type == 0"  -->
+        <gn-edit-fleet :close="closeEdit" v-model="user" :show="showEdit"></gn-edit-fleet>
         <div class="gn-user">
             <div class="gn-user-header">
                 <v-row no-gutters>
@@ -8,7 +9,7 @@
                         <v-icon v-if="type == 0" small color="green" @click="changeType">mdi-shield-home</v-icon>
                         <v-icon v-if="type == 1" small color="green" @click="changeType">mdi-shield</v-icon>
                         <v-icon v-if="type == 2" small color="red" @click="changeType">mdi-sword-cross</v-icon>
-                        <span>{{ getUserName }}</span>
+                        <span @click="showEdit = true">{{ getUserName }}</span>
                     </v-col>
                     <v-spacer></v-spacer>
                     <v-col>
@@ -74,19 +75,14 @@
 </template>
 <script>
 import CONFIG from '@/config.json'
-// import GnUserFleet from '@/components/GnUserFleet'
+import GnEditFleet from '@/components/GnEditFleet'
 import GnUserFleetSettings from '@/components/GnUserFleetSettings'
 
 export default {
     name: 'GnUser',
-    components: { GnUserFleetSettings },
+    components: { GnUserFleetSettings, GnEditFleet },
     props: {
-        user: function () {
-            return {
-                type: Object,
-                default: {},
-            }
-        },
+        value: Object,
         type: function () {
             return {
                 type: Number,
@@ -98,6 +94,11 @@ export default {
             default: function () {},
         },
     },
+    data: function() {
+        return {
+            showEdit: false
+        }
+    },
     computed: {
         UNITS: function () {
             return CONFIG.UNITS
@@ -107,6 +108,14 @@ export default {
         },
         EXEN: function () {
             return CONFIG.EXEN
+        },
+        user: {
+            get() {
+                return this.value
+            },
+            set(value) {
+                this.$emit('input', value)
+            },
         },
         getUserName: function () {
             let name = ''
@@ -142,6 +151,10 @@ export default {
         changeType() {
             this.$root.$emit('changeType', this.user.id, this.type)
         },
+        closeEdit: function() {
+            // this.user = user
+            this.showEdit = false
+        }
     },
 }
 </script>

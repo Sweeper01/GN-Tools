@@ -137,7 +137,7 @@
             <v-card-actions>
                 <v-row>
                     <v-col cols="4">
-                        <v-btn color="error" block text @click="close">Schließen</v-btn>
+                        <v-btn color="error" block text @click="close">Abbrechen</v-btn>
                     </v-col>
                     <v-col cols="8">
                         <v-btn color="primary" block text @click="submit">Flotte hinzufügen</v-btn>
@@ -193,8 +193,10 @@ export default {
             this.scan.fleet[1].duration = duration
             this.scan.fleet[2].duration = duration
         },
-        parse: function () {
+        parse: async function () {
             this.scan = GNParser.parse(this.scanText, this.scan)
+
+            await this.$forceUpdate()
 
             console.warn(this.scan)
         },
@@ -224,6 +226,7 @@ export default {
                 Object.keys(scan.fleet[i].units).forEach((u) => (scan.fleet[i].units[u] = parseInt(scan.fleet[i].units[u])))
             }
 
+            Object.keys(scan.orb).forEach((u) => (scan.orb[u] == 0 || scan.orb[u] == '') && delete scan.orb[u])
             Object.keys(scan.orb).forEach((u) => (scan.orb[u] = parseInt(scan.orb[u])))
 
             return scan
