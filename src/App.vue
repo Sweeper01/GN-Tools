@@ -124,7 +124,6 @@ export default {
             return mode
         },
         updateUsers: function (users, lastResult) {
-            let _this = this
 
             if (lastResult && lastResult.data.attributes.attackers) {
                 lastResult.data.attributes.attackers.forEach((atk) => {
@@ -354,6 +353,7 @@ export default {
                 let attributes = result.data.attributes
 
                 if (attributes.target) {
+                    request.data.attributes.target.name = attributes.target.name
                     attributes.target.fleets.after.forEach((fleet) => {
                         request.data.attributes.target.fleets.push({
                             name: fleet.name,

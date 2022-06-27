@@ -86,6 +86,13 @@ export default {
                 })
                 index = index + 2
             }
+            if (line.toLowerCase().includes("sektorscan")) {
+                scans.push({
+                    type: "sektorscan",
+                    lines: lines.slice(index, index + 5)
+                })
+                index = index + 5
+            }
             if (line.toLowerCase().includes("flottenzusammensetzung")) {
                 parses.push({
                     type: "flottenzusammensetzung",
