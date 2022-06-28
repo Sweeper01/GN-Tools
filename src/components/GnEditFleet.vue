@@ -1,5 +1,5 @@
 <template>
-    <v-dialog v-model="dialog" fullscreen hide-overlay>
+    <v-dialog v-model="dialog" fullscreen hide-overlay persistent>
         <v-card tile>
             <v-toolbar dark color="primary">
                 <v-toolbar-title>Flotte editieren</v-toolbar-title>
@@ -179,6 +179,7 @@ export default {
                 Object.keys(user.fleet[i].units).forEach((u) => (user.fleet[i].units[u] = parseInt(user.fleet[i].units[u])))
             }
 
+            Object.keys(user.orb).forEach((u) => (user.orb[u] == 0 || user.orb[u] == '') && delete user.orb[u])
             Object.keys(user.orb).forEach((u) => (user.orb[u] = parseInt(user.orb[u])))
 
             return user

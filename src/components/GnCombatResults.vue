@@ -1,13 +1,12 @@
 <template>
     <div v-show="results.length > 0">
         <h1 class="mt-5">Übersicht</h1>
-        <v-divider></v-divider>
-        <gn-combat-result-overview :results="results"></gn-combat-result-overview>
-        <div v-for="(result,index) in results" :key="index">
-            <h1 class="mt-5" v-if="result.mode == 0">Tick {{ result.tick }}</h1>
-            <h1 class="mt-5" v-if="result.mode > 0">Vortick {{ result.mode }}</h1>
-            <v-divider></v-divider>
-            <gn-combat-result :result="result.response"></gn-combat-result>
+        <gn-combat-result-overview :results="results" class="mb-5"></gn-combat-result-overview>
+        <!-- <v-divider class="mt-5 mb-5"></v-divider> -->
+        <div v-for="(result, index) in results" :key="index">
+            <h3 v-if="(index > 0 && result.tick != results[index-1].tick) || index == 0">Tick {{ result.tick }}</h3>
+            <v-divider v-if="(index > 0 && result.tick != results[index-1].tick) || index == 0"  class="mb-5"></v-divider>
+            <gn-combat-result class="mb-5" :result="result.response" :tick="result.tick" :mode="result.mode"></gn-combat-result>
         </div>
     </div>
 </template>
@@ -28,7 +27,7 @@ export default {
                 type: Array,
                 default: [],
             }
-        }
-    },
+        },
+    }
 }
 </script>

@@ -1,6 +1,8 @@
 <template>
     <div v-show="result.data">
-        <v-card class="gn-combat-result">
+        <v-card class="gn-combat-result" :class="{ 'gn-light-gray': mode > 0 }">
+            <!-- 'gn-light-blue': tick%2 != 0 && mode == 0,  -->
+            <v-card-subtitle v-if="mode > 0" >Vortick {{ mode }}</v-card-subtitle>
             <v-card-text>
                 <v-row>
                     <v-col>
@@ -179,6 +181,18 @@ export default {
             return {
                 type: Object,
                 default: {},
+            }
+        },
+        tick: function () {
+            return {
+                type: Number,
+                default: 0,
+            }
+        },
+        mode: function () {
+            return {
+                type: Number,
+                default: 0,
             }
         },
     },
@@ -486,5 +500,11 @@ export default {
 .gn-combat-result-table thead th {
     border-bottom: 1px solid black;
     text-align: left;
+}
+/* .gn-light-blue {
+    background-color: rgba(223, 241, 252, 0.7) !important;
+} */
+.gn-light-gray {
+    background-color: rgb(238, 236, 236) !important;
 }
 </style>

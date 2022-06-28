@@ -124,7 +124,6 @@ export default {
             return mode
         },
         updateUsers: function (users, lastResult) {
-
             if (lastResult && lastResult.data.attributes.attackers) {
                 lastResult.data.attributes.attackers.forEach((atk) => {
                     let userIndex = users.findIndex((u) => u.id == atk.name)
@@ -154,8 +153,8 @@ export default {
                         fleet: {
                             0: {},
                             1: {},
-                            2: {}
-                        }
+                            2: {},
+                        },
                     }
 
                     Object.keys(config.EXEN).forEach((exe) => {
@@ -168,14 +167,13 @@ export default {
                         let newFleet = {
                             units: {},
                             delay: oldFleet.delay,
-                            duration: oldFleet.duration
+                            duration: oldFleet.duration,
                         }
 
                         Object.keys(fleet.units).forEach((unit) => {
-                            if(config.ORB[unit]){
+                            if (config.ORB[unit]) {
                                 target.orb[unit] = fleet.units[unit]
-                            }
-                            else {
+                            } else {
                                 newFleet.units[unit] = fleet.units[unit]
                             }
                         })
@@ -456,19 +454,11 @@ export default {
                 try {
                     let newUsers = this.getNewUsers(combatUsers, i)
 
-                    //Main Combat Tick
-                    if ((newUsers.target || newUsers.defenders.length > 0 || newUsers.attackers.length > 0 || lastResult) && i >= 0) {
-                        request = this.getNextRequest(lastResult, i, newUsers, 0)
-                        response = await axios.post('https://galactic-conquest.de/api/combats', request, cfg)
-                        lastResult = response.data
-                        this.updateUsers(combatUsers, response.data)
-                        this.results.push({ tick: i + 1, request: request, response: lastResult, mode: 0 })
-                    }
-
                     //Pre Ticks
                     if (lastResult) {
                         mode = this.getCombatMode(lastResult.data.attributes.target.fleets.after[0])
                     }
+
                     if (mode > 1) {
                         //Pre Tick 2
                         newUsers = this.getPreTickUsers(combatUsers, i + 2)
@@ -488,6 +478,15 @@ export default {
                             this.updateUsers(combatUsers, response.data)
                             this.results.push({ tick: i + 1, request: request, response: response.data, mode: 1 })
                         }
+                    }
+
+                    //Main Combat Tick
+                    if ((newUsers.target || newUsers.defenders.length > 0 || newUsers.attackers.length > 0 || lastResult) && i >= 0) {
+                        request = this.getNextRequest(lastResult, i, newUsers, 0)
+                        response = await axios.post('https://galactic-conquest.de/api/combats', request, cfg)
+                        lastResult = response.data
+                        this.updateUsers(combatUsers, response.data)
+                        this.results.push({ tick: i + 1, request: request, response: lastResult, mode: 0 })
                     }
                 } catch (e) {
                     console.warn(e)

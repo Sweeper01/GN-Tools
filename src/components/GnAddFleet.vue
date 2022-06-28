@@ -1,5 +1,5 @@
 <template>
-    <v-dialog v-model="dialog" fullscreen hide-overlay>
+    <v-dialog v-model="dialog" fullscreen hide-overlay persistent>
         <template v-slot:activator="{ on, attrs }">
             <v-btn height="100%" color="primary" dark icon tile x-large v-bind="attrs" v-on="on"><v-icon x-large>mdi-plus-box</v-icon></v-btn>
         </template>
