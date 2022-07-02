@@ -1,6 +1,7 @@
 <template>
     <v-app>
         <v-main>
+            <v-snackbar :value="alert" dense top centered timeout="2000" color="green">Link kopiert </v-snackbar>
             <v-container>
                 <v-row>
                     <v-col><h1>Flotten</h1></v-col>
@@ -18,6 +19,11 @@
                     </v-col>
                     <v-col cols="6">
                         <v-btn @click="simulate">Simulate</v-btn>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col>
+                        <v-btn text x-small @click="copyURL">Link teilen</v-btn>
                     </v-col>
                 </v-row>
                 <v-divider class="mt-5"></v-divider>
@@ -48,10 +54,11 @@ export default {
     },
 
     data: () => ({
-        user: '',
+        // user: '',
         users: [],
         ticks: 5,
         results: [],
+        alert: false,
     }),
     computed: {
         UNITS: function () {
@@ -63,8 +70,25 @@ export default {
         EXEN: function () {
             return config.EXEN
         },
+        url: function () {
+            let url = location.href
+            if (this.users.length > 0) {
+                let json = JSON.stringify(this.users)
+                let base = btoa(json)
+                url = url + '?a=' + base
+            }
+            return url
+        },
     },
     methods: {
+        copyURL: async function () {
+            try {
+                await navigator.clipboard.writeText(this.url)
+                this.alert = true
+            } catch ($e) {
+                console.warn('kopieren fehlgeschlagen')
+            }
+        },
         getNewRequestObj: function (mode = 0) {
             return {
                 data: {
@@ -493,6 +517,15 @@ export default {
                 }
             }
         },
+    },
+    created: function () {
+        let uri = window.location.search.substring(1)
+        let params = new URLSearchParams(uri)
+        let a = params.get('a')
+        if (a) {
+            let json = atob(a)
+            this.users = JSON.parse(json)
+        }
     },
     mounted: function () {
         // console.warn(test.SCANS)
