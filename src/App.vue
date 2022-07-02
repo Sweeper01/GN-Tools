@@ -71,7 +71,7 @@ export default {
             return config.EXEN
         },
         url: function () {
-            let url = location.href
+            let url = location.origin + location.pathname
             if (this.users.length > 0) {
                 let json = JSON.stringify(this.users)
                 let base = btoa(json)
