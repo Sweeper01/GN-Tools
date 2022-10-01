@@ -21,6 +21,10 @@
                 <!-- v-if="type == 0 && (Object.keys(user.exen).length > 0 || Object.keys(user.orb).length > 0 || Object.keys(user.fleet[0].units).length > 0)" -->
                 <v-row no-gutters>
                     <v-col>
+                        <div v-if="type == 0 && user.points">
+                            <span class="gn-user-label">Punkte:</span>
+                            <span class="gn-user-ship">{{ displayPoints(user.points) }}</span>
+                        </div>
                         <div v-if="type == 0 && Object.keys(user.exen).length > 0">
                             <span class="gn-user-label">Exen:</span>
                             <span class="gn-user-ship" v-for="(amount, id) in user.exen" :key="id">{{ displayExen(id, amount) }}</span>
@@ -94,9 +98,9 @@ export default {
             default: function () {},
         },
     },
-    data: function() {
+    data: function () {
         return {
-            showEdit: false
+            showEdit: false,
         }
     },
     computed: {
@@ -140,10 +144,17 @@ export default {
             return Number(number).toLocaleString()
         },
         displayShip: function (id, amount) {
-            return ' ' + this.format(amount) + '\xa0' + this.UNITS[id].SHORT
+            if (amount > 0) {
+                return ' ' + this.format(amount) + '\xa0' + this.UNITS[id].SHORT
+            }
         },
         displayOrb: function (id, amount) {
-            return ' ' + this.format(amount) + '\xa0' + this.ORB[id].SHORT
+            if (amount > 0) {
+                return ' ' + this.format(amount) + '\xa0' + this.ORB[id].SHORT
+            }
+        },
+        displayPoints: function (amount) {
+            return ' ' + this.format(amount)
         },
         displayExen: function (id, amount) {
             return ' ' + this.format(amount) + '\xa0' + this.EXEN[id].SHORT
@@ -151,10 +162,10 @@ export default {
         changeType() {
             this.$root.$emit('changeType', this.user.id, this.type)
         },
-        closeEdit: function() {
+        closeEdit: function () {
             // this.user = user
             this.showEdit = false
-        }
+        },
     },
 }
 </script>

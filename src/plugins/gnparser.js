@@ -121,7 +121,8 @@ export default {
 
             // Header
             // Galaxy-Network MiliScan (100%) Sweeper (9:1)
-            let header = lines[0].trim().split(' ')
+            let headerline = lines[0].trim().split('Galaxy-Network')
+            let header = headerline[1].trim().split(' ')
             result.name = header[2]
             let cords = header[3].replace('(', '').replace(')', '').split(':')
             result.galaxy = cords[0]
@@ -159,6 +160,7 @@ export default {
 
             if (type == 'sektorscan') {
                 if (lines[3] && lines[3].length > 0) {
+                    result.points = _this.getPointsFromSektor(lines[1])
                     result.exen = _this.getExenFromSektor(lines[3])
                 }
             }
@@ -272,11 +274,14 @@ export default {
 
         for (let i = 0; i + 1 < ships.length; i += 2) {
             let name = ships[i]
+            let amount = ships[i + 1]
             let unit = CONFIG.MAP[name.toLowerCase()]
             if (!unit) {
                 throw "Fehler beim Parsen: Einheit (" + name + ") konnte nicht gefunden werden!"
             }
-            result[unit] = parseInt(ships[i + 1])
+            if (amount > 0) {
+                result[unit] = parseInt(amount)
+            }
         }
 
         return result;
@@ -301,11 +306,14 @@ export default {
 
         for (let i = 0; i + 1 < ships.length; i += 2) {
             let name = ships[i + 1]
+            let amount = ships[i]
             let unit = CONFIG.MAP[name.toLowerCase()]
             if (!unit) {
                 throw "Fehler beim Parsen: Einheit (" + name + ") konnte nicht gefunden werden!"
             }
-            result[unit] = parseInt(ships[i])
+            if (amount > 0) {
+                result[unit] = parseInt(amount)
+            }
         }
 
         return result;
@@ -333,6 +341,19 @@ export default {
         }
 
         return result;
+    },
+    getPointsFromSektor: function (line) {
+        //Punkte: 78.998.101
+
+        //Cleanup
+        line = line.replaceAll('- ', '')
+        line = line.replaceAll(':', '')
+        line = line.replaceAll('.', '')
+        line = line.trim()
+
+        let points = line.split(' ')
+
+        return points[1]
     },
     getExenFromSektor: function (line) {
         //M-Extraktoren: 19534 - K-Extraktoren: 3700
