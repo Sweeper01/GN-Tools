@@ -15,14 +15,14 @@
                 </v-col>
             </v-row>
             <v-row v-if="showParse">
-                <v-col cols="12" sm="4" md="3" lg="2">
+                <v-col cols="12" sm="6" md="4">
                     <gn-user v-model="user" :type="user.type" :deleteUser="deleteUser"></gn-user>
                 </v-col>
             </v-row>
             <v-divider class="mt-5"></v-divider>
 
             <v-row class="mt-3">
-                <v-col cols="12" sm="6" md="4" lg="2" v-if="user.points">
+                <v-col cols="12" sm="6" md="4" v-if="user.points">
                     <v-card>
                         <v-card-title>Ressourcenberechnung</v-card-title>
                         <v-card-text>
@@ -59,7 +59,7 @@
                         </v-card-text>
                     </v-card>
                 </v-col>
-                <v-col cols="12" sm="6" md="4" lg="2" v-if="pointsPerTick.length">
+                <v-col cols="12" sm="6" md="4" v-if="pointsPerTick.length">
                     <v-card>
                         <v-card-title>Punkteberechnung</v-card-title>
                         <v-card-text>
