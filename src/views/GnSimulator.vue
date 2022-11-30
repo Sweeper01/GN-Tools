@@ -1,17 +1,90 @@
 <template>
     <div>
         <v-snackbar :value="alert" dense top centered timeout="2000" color="green">Link kopiert </v-snackbar>
+        <v-row>
+            <v-col cols="12">
+                <v-btn-toggle v-model="mode" mandatory tile class="gn-sim-mode">
+                    <v-btn>Simple</v-btn>
+                    <v-btn>Advanced</v-btn>
+                </v-btn-toggle>
+            </v-col>
+        </v-row>
         <v-container>
-            <v-row>
-                <v-col><h1>Flotten</h1></v-col>
-            </v-row>
-            <v-divider class="mb-5"></v-divider>
-            <v-row>
-                <v-col v-for="(user, index) in users" :key="user.id" cols="12" sm="4" md="3" lg="2">
-                    <gn-user v-model="users[index]" :type="user.type" :deleteUser="deleteUser"></gn-user>
-                </v-col>
-                <v-col cols="12" sm="4" md="3" lg="2"><gn-add-fleet :add="addUser"></gn-add-fleet></v-col>
-            </v-row>
+            <div v-show="mode == 0">
+                <v-row>
+                    <v-col cols="12" md="6">
+                        <h1 class="mb-3">Verteidiger</h1>
+                        <v-text-field
+                            class="mb-1"
+                            v-for="unit in UNITS"
+                            :key="unit.ID"
+                            v-model="simple_deff.fleet[0].units[unit.ID]"
+                            :label="unit.NAME"
+                            dense
+                            outlined
+                            hide-details
+                            type="Number"
+                            min="0"
+                        >
+                        </v-text-field>
+
+                        <v-text-field
+                            class="mb-1"
+                            v-for="orb in ORB"
+                            :key="orb.ID"
+                            v-model="simple_deff.orb[orb.ID]"
+                            :label="orb.NAME"
+                            dense
+                            outlined
+                            hide-details
+                            type="Number"
+                            min="0"
+                        >
+                        </v-text-field>
+                        <v-text-field
+                            class="mb-1"
+                            v-for="exe in EXEN"
+                            :key="exe.ID"
+                            v-model="simple_deff.exen[exe.ID]"
+                            :label="exe.NAME"
+                            dense
+                            outlined
+                            hide-details
+                            type="Number"
+                            min="0"
+                        >
+                        </v-text-field>
+                    </v-col>
+                    <v-col cols="12" md="6">
+                        <h1 class="mb-3">Angreifer</h1>
+                        <v-text-field
+                            class="mb-1"
+                            v-for="unit in UNITS"
+                            :key="unit.ID"
+                            v-model="simple_off.fleet[1].units[unit.ID]"
+                            :label="unit.NAME"
+                            dense
+                            outlined
+                            hide-details
+                            type="Number"
+                            min="0"
+                        >
+                        </v-text-field>
+                    </v-col>
+                </v-row>
+            </div>
+            <div v-show="mode == 1">
+                <v-row>
+                    <v-col><h1>Flotten</h1></v-col>
+                </v-row>
+                <v-divider class="mb-5"></v-divider>
+                <v-row>
+                    <v-col v-for="(user, index) in users" :key="user.id" cols="12" sm="4" md="3" lg="2">
+                        <gn-user v-model="users[index]" :type="user.type" :deleteUser="deleteUser"></gn-user>
+                    </v-col>
+                    <v-col cols="12" sm="4" md="3" lg="2"><gn-add-fleet :add="addUser"></gn-add-fleet></v-col>
+                </v-row>
+            </div>
             <v-row class="mt-5">
                 <v-col cols="6" md="2">
                     <v-text-field v-model="ticks" type="Number" label="Anzahl Ticks"></v-text-field>
@@ -25,6 +98,7 @@
                     <v-btn text x-small @click="copyURL">Link teilen</v-btn>
                 </v-col>
             </v-row>
+
             <v-divider class="mt-5"></v-divider>
             <gn-combat-results :results="results"></gn-combat-results>
             <v-divider class="mb-5"></v-divider>
@@ -53,10 +127,35 @@ export default {
 
     data: () => ({
         // user: '',
+        mode: 0,
         users: [],
         ticks: 5,
         results: [],
         alert: false,
+        simple_deff: {
+            id: 'sd999',
+            name: 'Verteidiger',
+            type: 0,
+            exen: {},
+            orb: {},
+            fleet: {
+                0: { units: {} },
+                1: { units: {}, delay: 0, duration: 20 },
+                2: { units: {}, delay: 0, duration: 20 },
+            },
+        },
+        simple_off: {
+            id: 'so999',
+            name: 'Angreifer',
+            type: 2,
+            exen: {},
+            orb: {},
+            fleet: {
+                0: { units: {} },
+                1: { units: {}, delay: 0, duration: 5 },
+                2: { units: {}, delay: 0, duration: 5 },
+            },
+        },
     }),
     computed: {
         UNITS: function () {
@@ -79,6 +178,17 @@ export default {
         },
     },
     methods: {
+        clean: function (user) {
+            for (let i = 0; i < 3; i++) {
+                Object.keys(user.fleet[i].units).forEach((u) => (user.fleet[i].units[u] == 0 || user.fleet[i].units[u] == '') && delete user.fleet[i].units[u])
+                Object.keys(user.fleet[i].units).forEach((u) => (user.fleet[i].units[u] = parseInt(user.fleet[i].units[u])))
+            }
+
+            Object.keys(user.orb).forEach((u) => (user.orb[u] == 0 || user.orb[u] == '') && delete user.orb[u])
+            Object.keys(user.orb).forEach((u) => (user.orb[u] = parseInt(user.orb[u])))
+
+            return user
+        },
         copyURL: async function () {
             try {
                 await navigator.clipboard.writeText(this.url)
@@ -455,6 +565,12 @@ export default {
         },
         simulate: async function () {
             // let _this = this
+            if (this.mode == 0) {
+                this.users = []
+                this.users.push(this.clean(this.simple_deff))
+                this.users.push(this.clean(this.simple_off))
+            }
+
             let cfg = {
                 headers: {
                     Accept: 'application/vnd.api+json;version=1.0',
@@ -524,6 +640,7 @@ export default {
         if (a) {
             let json = atob(a)
             this.users = JSON.parse(json)
+            this.mode = 1
         }
     },
     mounted: function () {
@@ -563,4 +680,10 @@ export default {
 }
 </script>
 <style>
+.gn-sim-mode {
+    width: 100%;
+}
+.gn-sim-mode .v-btn {
+    width: 50%;
+}
 </style>
