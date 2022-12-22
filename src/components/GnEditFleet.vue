@@ -1,7 +1,7 @@
 <template>
     <v-dialog v-model="dialog" fullscreen hide-overlay persistent>
         <v-card tile>
-            <v-toolbar dark color="primary">
+            <v-toolbar>
                 <v-toolbar-title>Flotte editieren</v-toolbar-title>
                 <v-spacer></v-spacer>
                 <v-toolbar-items>
@@ -15,7 +15,7 @@
                     <v-col>
                         <v-row>
                             <v-col>
-                                <v-btn-toggle v-model="user.type" color="primary" tile mandatory>
+                                <v-btn-toggle v-model="user.type" tile mandatory>
                                     <v-btn><v-icon color="green">mdi-shield-home</v-icon><span class="d-none d-sm-flex">Ziel</span></v-btn>
                                     <v-btn @click="setDuration(20)"><v-icon color="green">mdi-shield</v-icon><span class="d-none d-sm-flex">Verteidiger</span></v-btn>
                                     <v-btn @click="setDuration(5)"><v-icon color="red">mdi-sword-cross</v-icon><span class="d-none d-sm-flex">Angreifer</span></v-btn>
@@ -111,7 +111,7 @@
             <v-card-actions>
                 <v-row>
                     <v-col cols="12">
-                        <v-btn color="primary" block text @click="submit">Schließen</v-btn>
+                        <v-btn block text @click="submit">Schließen</v-btn>
                     </v-col>
                 </v-row>
             </v-card-actions>

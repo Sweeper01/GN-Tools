@@ -11,8 +11,8 @@
                         <v-list-item-title>{{ item.title }}</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
-            <v-divider></v-divider>
-            <v-switch v-model="$vuetify.theme.dark" label="Darkmode"></v-switch>
+                <v-divider></v-divider>
+                <v-switch v-model="$vuetify.theme.dark" @change="darkModeToggle" label="Darkmode"></v-switch>
             </v-list>
         </v-navigation-drawer>
         <v-main>
@@ -32,17 +32,15 @@ export default {
             { title: 'Scan Auswertung', icon: 'mdi-magnify', route: '/ScanAuswertung' },
         ],
     }),
+    methods: {
+        darkModeToggle: function (elem) {
+            localStorage.setItem('gn-simu-darkmode', elem)
+        },
+    },
     created: function () {
-        let date = new Date()
-        let hour = date.getHours()
-
-        if(hour < 8 || hour >= 20){
-            this.$vuetify.theme.dark = true
-        }
-        else {
-            this.$vuetify.theme.dark = false
-        }
-    }
+        let darkMode = localStorage.getItem('gn-simu-darkmode')
+        this.$vuetify.theme.dark = (darkMode === 'true')
+    },
 }
 </script>
 <style>

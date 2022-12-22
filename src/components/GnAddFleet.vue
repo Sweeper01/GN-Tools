@@ -1,10 +1,10 @@
 <template>
     <v-dialog v-model="dialog" fullscreen hide-overlay persistent>
         <template v-slot:activator="{ on, attrs }">
-            <v-btn height="100%" color="primary" dark icon tile x-large v-bind="attrs" v-on="on"><v-icon x-large>mdi-plus-box</v-icon></v-btn>
+            <v-btn height="100%" dark icon tile x-large v-bind="attrs" v-on="on"><v-icon x-large>mdi-plus-box</v-icon></v-btn>
         </template>
         <v-card tile>
-            <v-toolbar dark color="primary">
+            <v-toolbar>
                 <v-toolbar-title>Flotte hinzufügen</v-toolbar-title>
                 <v-spacer></v-spacer>
                 <v-toolbar-items>
@@ -31,7 +31,7 @@
                         </v-row>
                         <v-row>
                             <v-col>
-                                <v-btn-toggle v-model="scan.type" color="primary" tile mandatory>
+                                <v-btn-toggle v-model="scan.type" tile mandatory>
                                     <v-btn><v-icon color="green">mdi-shield-home</v-icon><span class="d-none d-sm-flex">Ziel</span></v-btn>
                                     <v-btn @click="setDuration(20)"><v-icon color="green">mdi-shield</v-icon><span class="d-none d-sm-flex">Verteidiger</span></v-btn>
                                     <v-btn @click="setDuration(5)"><v-icon color="red">mdi-sword-cross</v-icon><span class="d-none d-sm-flex">Angreifer</span></v-btn>
@@ -140,7 +140,7 @@
                         <v-btn color="error" block text @click="close">Abbrechen</v-btn>
                     </v-col>
                     <v-col cols="8">
-                        <v-btn color="primary" block text @click="submit">Flotte hinzufügen</v-btn>
+                        <v-btn block text @click="submit">Flotte hinzufügen</v-btn>
                     </v-col>
                 </v-row>
             </v-card-actions>

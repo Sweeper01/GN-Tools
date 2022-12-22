@@ -6,7 +6,7 @@
                     <v-col>
                         <v-row>
                             <v-col cols="12" md="7">
-                                <table class="gn-overview-table">
+                                <table class="gn-overview-table" :class="{'dark': $vuetify.theme.dark }">
                                     <colgroup>
                                         <col span="1" style="width: 40%" />
                                         <col span="1" style="width: 20%" />
@@ -40,7 +40,7 @@
                                 </table>
                             </v-col>
                             <v-col cols="12" md="5">
-                                <table class="gn-overview-table">
+                                <table class="gn-overview-table" :class="{'dark': $vuetify.theme.dark }">
                                     <colgroup>
                                         <col span="1" style="width: 55%" />
                                         <col span="1" style="width: 45%" />
@@ -86,7 +86,7 @@
                     <v-col>
                         <v-row>
                             <v-col cols="12" md="7">
-                                <table class="gn-overview-table">
+                                <table class="gn-overview-table" :class="{'dark': $vuetify.theme.dark }">
                                     <colgroup>
                                         <col span="1" style="width: 40%" />
                                         <col span="1" style="width: 20%" />
@@ -108,7 +108,7 @@
                                 </table>
                             </v-col>
                             <v-col cols="12" md="5">
-                                <table class="gn-overview-table">
+                                <table class="gn-overview-table" :class="{'dark': $vuetify.theme.dark }">
                                     <colgroup>
                                         <col span="1" style="width: 55%" />
                                         <col span="1" style="width: 45%" />
@@ -547,6 +547,9 @@ export default {
     border-collapse: collapse;
     font-size: 14px;
     color: black;
+}
+.gn-overview-table.dark {
+    color: #ffffffd7
 }
 .gn-overview-table tr td:first-child {
     text-align: left;
