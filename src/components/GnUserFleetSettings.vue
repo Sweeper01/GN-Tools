@@ -9,7 +9,7 @@
             </v-tooltip>
 
             <span>
-                <select class="gn-user-fleet-settings-select" v-model="delay">
+                <select class="gn-user-fleet-settings-select" :class="{'dark': $vuetify.theme.dark }" v-model="delay">
                     <option v-for="(n, index) in 21" :key="index" :value="index">{{ index }}</option>
                 </select>
             </span>
@@ -23,7 +23,7 @@
             </v-tooltip>
 
             <span>
-                <select class="gn-user-fleet-settings-select" v-model="duration">
+                <select class="gn-user-fleet-settings-select" :class="{'dark': $vuetify.theme.dark }" v-model="duration">
                     <option v-for="index in 20" :key="index" :value="index">{{ index }}</option>
                 </select>
             </span>
@@ -111,5 +111,9 @@ export default {
 .gn-user-fleet-settings-select {
     padding: 0px 2px;
     text-align: center;
+}
+.gn-user-fleet-settings-select.dark {
+    background: #121212;
+    color: #FFFFFF
 }
 </style>
