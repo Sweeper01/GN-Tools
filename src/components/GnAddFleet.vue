@@ -233,7 +233,7 @@ export default {
         },
         submit: function () {
             if (this.scan.id.length == 0) {
-                this.scan.id = Date.now()
+                this.scan.id = this.$GNNames.getName()
             }
 
             this.scan = this.clean(this.scan)

@@ -634,6 +634,7 @@ export default {
         },
     },
     created: function () {
+        let _this = this
         let uri = window.location.search.substring(1)
         let params = new URLSearchParams(uri)
         let a = params.get('a')
@@ -641,6 +642,7 @@ export default {
             let json = atob(a)
             this.users = JSON.parse(json)
             this.mode = 1
+            this.users.forEach((u) => _this.$GNNames.addName(u.id))
         }
     },
     mounted: function () {

@@ -71,6 +71,13 @@
                                         <td>{{ getSumDefenderProfit() >= 0 ? 'Gewinn:' : 'Verlust:' }}</td>
                                         <td>{{ format(getSumDefenderProfit()) }}</td>
                                     </tr>
+                                    <thead>
+                                        <th colspan="2">per User</th>
+                                    </thead>
+                                    <tr v-for="dfd in defenders" :key="'dBResUser' + dfd.id">
+                                        <td>{{ dfd.id }}</td>
+                                        <td>{{ format(getDefenderProfit(dfd)) }}</td>
+                                    </tr>
                                 </table>
                             </v-col>
                         </v-row>
@@ -132,6 +139,13 @@
                                         <td>Kosten pro Exe:</td>
                                         <td>{{ format(getAttackerCostsPerExe()) }}</td>
                                     </tr>
+                                    <thead>
+                                        <th colspan="2">per User</th>
+                                    </thead>
+                                    <tr v-for="atk in attackers" :key="'aExeUser' + atk.id">
+                                        <td>{{ atk.id }}</td>
+                                        <td>{{ format(getSumAttackerExenStolenPerUser(atk)) + ' x ' + format(getAttackerCostsPerExePerUser(atk)) }}</td>
+                                    </tr>
                                 </table>
                             </v-col>
                         </v-row>
@@ -154,6 +168,12 @@ export default {
             }
         },
     },
+    data: function () {
+        return {
+            defenders: [],
+            attackers: [],
+        }
+    },
     computed: {
         UNITS: function () {
             return config.UNITS
@@ -169,7 +189,9 @@ export default {
         },
         total: function () {
             let _this = this
-            let users = []
+            _this.defenders = []
+            _this.attackers = []
+            // let users = []
 
             let total = {
                 target: {
@@ -235,36 +257,43 @@ export default {
                 let response = this.results[i].response.data.attributes
 
                 if (response.target) {
+                    let user = _this.defenders.find((u) => u.id == response.target.name)
+                    if (!user) {
+                        user = _this.getNewUserObj(response.target.name)
+                        _this.defenders.push(user)
+                    }
                     //before
                     if (i == 0) {
                         Object.keys(config.EXEN).forEach((exe) => {
                             total.target.extractors.before[exe] = response.target.extractors.before[exe]
                         })
 
-                        response.target.fleets.before.forEach((dfd) => {
-                            Object.keys(dfd.units).forEach((u) => {
-                                _this.add(total.target.fleets.before[0].units, u, dfd.units[u])
+                        response.target.fleets.before.forEach((tgt) => {
+                            Object.keys(tgt.units).forEach((u) => {
+                                _this.add(total.target.fleets.before[0].units, u, tgt.units[u])
                             })
                         })
                     }
 
                     //after
-                    response.target.fleets.after.forEach((dfd) => {
-                        // Object.keys(dfd.units).forEach((u) => {
-                        //     _this.add(total.target.fleets.after[0].units, u, dfd.units[u])
+                    response.target.fleets.after.forEach((tgt) => {
+                        // Object.keys(tgt.units).forEach((u) => {
+                        //     _this.add(total.target.fleets.after[0].units, u, tgt.units[u])
                         // })
 
-                        Object.keys(dfd.losses).forEach((u) => {
-                            _this.add(total.target.fleets.after[0].losses, u, dfd.losses[u])
+                        Object.keys(tgt.losses).forEach((u) => {
+                            _this.add(total.target.fleets.after[0].losses, u, tgt.losses[u])
+                            _this.add(user.losses, u, tgt.losses[u])
                         })
 
-                        Object.keys(dfd.destroyed).forEach((u) => {
-                            _this.add(total.target.fleets.after[0].destroyed, u, dfd.destroyed[u])
+                        Object.keys(tgt.destroyed).forEach((u) => {
+                            _this.add(total.target.fleets.after[0].destroyed, u, tgt.destroyed[u])
                         })
 
                         Object.keys(config.RESOURCES).forEach((res) => {
-                            // _this.add(total.target.fleets.after[0].resources.salvaged, res, dfd.resources.salvaged[res])
-                            _this.add(total.target.fleets.after[0].resources.cost, res, dfd.resources.cost[res])
+                            // _this.add(total.target.fleets.after[0].resources.salvaged, res, tgt.resources.salvaged[res])
+                            _this.add(total.target.fleets.after[0].resources.cost, res, tgt.resources.cost[res])
+                            _this.add(user.cost, res, tgt.resources.cost[res])
                         })
                     })
 
@@ -275,6 +304,7 @@ export default {
 
                     Object.keys(config.RESOURCES).forEach((res) => {
                         _this.add(total.target.resources.salvaged, res, response.target.resources.salvaged[res])
+                        _this.add(user.salvaged, res, response.target.resources.salvaged[res])
                     })
                 }
 
@@ -282,10 +312,10 @@ export default {
                 if (response.defenders) {
                     //before
                     response.defenders.forEach((dfd) => {
-                        let user = users.find((u) => u.id == dfd.name)
+                        let user = _this.defenders.find((u) => u.id == dfd.name)
                         if (!user) {
-                            user = { id: dfd.name, fleets: [] }
-                            users.push(user)
+                            user = _this.getNewUserObj(dfd.name)
+                            _this.defenders.push(user)
                         }
                         dfd.fleets.before.forEach((fleet) => {
                             if (!user.fleets.find((f) => f == fleet.name)) {
@@ -300,6 +330,7 @@ export default {
 
                     //after
                     response.defenders.forEach((dfd) => {
+                        let user = _this.defenders.find((u) => u.id == dfd.name)
                         dfd.fleets.after.forEach((fleet) => {
                             // Object.keys(fleet.units).forEach((u) => {
                             //     _this.add(total.target.fleets.after[0].units, u, fleet.units[u])
@@ -307,6 +338,7 @@ export default {
 
                             Object.keys(fleet.losses).forEach((u) => {
                                 _this.add(total.target.fleets.after[0].losses, u, fleet.losses[u])
+                                _this.add(user.losses, u, fleet.losses[u])
                             })
 
                             Object.keys(fleet.destroyed).forEach((u) => {
@@ -316,6 +348,8 @@ export default {
                             Object.keys(config.RESOURCES).forEach((res) => {
                                 _this.add(total.target.resources.salvaged, res, fleet.resources.salvaged[res])
                                 _this.add(total.target.fleets.after[0].resources.cost, res, fleet.resources.cost[res])
+                                _this.add(user.salvaged, res, fleet.resources.salvaged[res])
+                                _this.add(user.cost, res, fleet.resources.cost[res])
                             })
                         })
                     })
@@ -324,10 +358,10 @@ export default {
                 if (response.attackers) {
                     //before
                     response.attackers.forEach((atk) => {
-                        let user = users.find((u) => u.id == atk.name)
+                        let user = _this.attackers.find((u) => u.id == atk.name)
                         if (!user) {
-                            user = { id: atk.name, fleets: [] }
-                            users.push(user)
+                            user = _this.getNewUserObj(atk.name)
+                            _this.attackers.push(user)
                         }
 
                         atk.fleets.before.forEach((fleet) => {
@@ -343,6 +377,7 @@ export default {
 
                     //after
                     response.attackers.forEach((atk) => {
+                        let user = _this.attackers.find((u) => u.id == atk.name)
                         atk.fleets.after.forEach((fleet) => {
                             // Object.keys(fleet.units).forEach((u) => {
                             //     _this.add(total.attackers[0].fleets.after[0].units, u, fleet.units[u])
@@ -350,6 +385,7 @@ export default {
 
                             Object.keys(fleet.losses).forEach((u) => {
                                 _this.add(total.attackers[0].fleets.after[0].losses, u, fleet.losses[u])
+                                _this.add(user.losses, u, fleet.losses[u])
                             })
 
                             Object.keys(fleet.destroyed).forEach((u) => {
@@ -359,10 +395,12 @@ export default {
                             Object.keys(config.RESOURCES).forEach((res) => {
                                 // _this.add(total.attackers[0].fleets.after[0].resources.salvaged, res, fleet.resources.salvaged[res])
                                 _this.add(total.attackers[0].fleets.after[0].resources.cost, res, fleet.resources.cost[res])
+                                _this.add(user.cost, res, fleet.resources.cost[res])
                             })
 
                             Object.keys(config.EXEN).forEach((exe) => {
                                 _this.add(total.attackers[0].fleets.after[0].extractors.stolen, exe, fleet.extractors.stolen[exe])
+                                _this.add(user.stolen, exe, fleet.extractors.stolen[exe])
                             })
                         })
                     })
@@ -420,6 +458,15 @@ export default {
         getSumDefenderProfit() {
             return this.getSumDefenderBR() - this.getSumDefenderCosts()
         },
+        getDefenderProfit(dfd) {
+            let cost = 0
+            let salvaged = 0
+            Object.keys(config.RESOURCES).forEach((ressourceId) => {
+                cost += dfd.cost[ressourceId] ? dfd.cost[ressourceId] : 0
+                salvaged += dfd.salvaged[ressourceId] ? dfd.salvaged[ressourceId] : 0
+            })
+            return salvaged - cost
+        },
         getAttackerBefore(unitId) {
             return this.total.attackers[0].fleets.before[0].units[unitId] ? this.total.attackers[0].fleets.before[0].units[unitId] : 0
         },
@@ -459,6 +506,28 @@ export default {
             } else {
                 return 0
             }
+        },
+        getSumAttackerExenStolenPerUser(atk) {
+            let exen = 0
+            Object.keys(config.EXEN).forEach((exe) => {
+                exen += atk.stolen[exe] ? atk.stolen[exe] : 0
+            })
+            return exen
+        },
+        getAttackerCostsPerExePerUser(atk) {
+            let costs = 0
+            Object.keys(config.RESOURCES).forEach((res) => {
+                costs += atk.cost[res] ? atk.cost[res] : 0
+            })
+            let exen = this.getSumAttackerExenStolenPerUser(atk)
+            if (exen > 0) {
+                return Math.round(costs / exen)
+            } else {
+                return 0
+            }
+        },
+        getNewUserObj(name) {
+            return { id: name, fleets: [], losses: {}, cost: {}, stolen: {}, salvaged: {} }
         },
         add: function (obj, attr, number) {
             if (obj[attr] == undefined) {
