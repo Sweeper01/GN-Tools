@@ -186,7 +186,7 @@ export default {
         },
         submit: function () {
             if (this.user.id.length == 0) {
-                this.user.id = Date.now()
+                this.user.id = this.$GNNames.getName()
             }
 
             this.user = this.clean(this.user)
