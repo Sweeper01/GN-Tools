@@ -390,7 +390,7 @@ export default {
                     case 0:
                         if (tick == 0) {
                             let target = _this.getNewTargetObj(user.id)
-
+      
                             Object.keys(config.EXEN).forEach((exe) => {
                                 target.extractors[exe] = user.exen[exe] ? parseInt(user.exen[exe]) : 0
                             })
@@ -564,6 +564,8 @@ export default {
             return request
         },
         simulate: async function () {
+            console.log("simulate")
+
             // let _this = this
             if (this.mode == 0) {
                 this.users = []

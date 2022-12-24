@@ -127,7 +127,7 @@ export default {
             let cords = header[3].replace('(', '').replace(')', '').split(':')
             result.galaxy = cords[0]
             result.nr = cords[1]
-            result.id = header[2] + '§' + cords[0] + '§' + cords[1]
+            result.id = header[2] // + '§' + cords[0] + '§' + cords[1]
 
             // MILISCAN
             if (type == 'miliscan') {
@@ -190,7 +190,7 @@ export default {
                 let cords = header[3].replace('(', '').replace(')', '').split(':')
                 result.galaxy = cords[0]
                 result.nr = cords[1]
-                result.id = header[2] + '§' + cords[0] + '§' + cords[1]
+                result.id = header[2]  // + '§' + cords[0] + '§' + cords[1]
 
                 for (let index = 2; index < lines.length; index++) {
                     let line = lines[index];
