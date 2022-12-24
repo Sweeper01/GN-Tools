@@ -1,14 +1,14 @@
 <template>
     <v-dialog v-model="dialog" fullscreen hide-overlay persistent>
         <template v-slot:activator="{ on, attrs }">
-            <v-btn height="100%" dark icon tile x-large v-bind="attrs" v-on="on"><v-icon x-large>mdi-plus-box</v-icon></v-btn>
+            <v-btn height="100%" icon tile x-large v-bind="attrs" v-on="on"><v-icon x-large>mdi-plus-box</v-icon></v-btn>
         </template>
         <v-card tile>
             <v-toolbar>
                 <v-toolbar-title>Flotte hinzufügen</v-toolbar-title>
                 <v-spacer></v-spacer>
                 <v-toolbar-items>
-                    <v-btn icon dark @click="close()">
+                    <v-btn icon @click="close()">
                         <v-icon>mdi-close</v-icon>
                     </v-btn>
                 </v-toolbar-items>

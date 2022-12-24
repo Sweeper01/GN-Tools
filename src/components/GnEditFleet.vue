@@ -5,7 +5,7 @@
                 <v-toolbar-title>Flotte editieren</v-toolbar-title>
                 <v-spacer></v-spacer>
                 <v-toolbar-items>
-                    <v-btn icon dark @click="submit()">
+                    <v-btn icon @click="submit()">
                         <v-icon>mdi-close</v-icon>
                     </v-btn>
                 </v-toolbar-items>
