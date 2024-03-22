@@ -111,9 +111,8 @@ import GnCombatResults from '@/components/GnCombatResults'
 import GnAddFleet from '@/components/GnAddFleet'
 import GnUser from '@/components/GnUser'
 import config from '@/config.json'
-import axios from 'axios'
+import gnKs from '@/plugins/kampfsystem/gnKs.js'
 
-// import test from '@/test.json'
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-case-declarations */
 export default {
@@ -354,10 +353,11 @@ export default {
                         let attacker = _this.getNewUserObj(user.id)
 
                         for (let f = 0; f <= 2; f++) {
+                            let calculateCarrierCapacityLosses = tick + 1 >= _this.ticks ? true : user.fleet[f].delay + user.fleet[f].duration == tick + 1 ? true : false
                             let fleet = {
                                 name: '' + f,
                                 units: { ...user.fleet[f].units },
-                                calculateCarrierCapacityLosses: user.fleet[f].delay + user.fleet[f].duration == tick + 1 ? true : false,
+                                calculateCarrierCapacityLosses: calculateCarrierCapacityLosses,
                             }
 
                             if (user.fleet[f].delay == tick) {
@@ -390,7 +390,7 @@ export default {
                     case 0:
                         if (tick == 0) {
                             let target = _this.getNewTargetObj(user.id)
-      
+
                             Object.keys(config.EXEN).forEach((exe) => {
                                 target.extractors[exe] = user.exen[exe] ? parseInt(user.exen[exe]) : 0
                             })
@@ -413,10 +413,11 @@ export default {
                         let defender = _this.getNewUserObj(user.id)
 
                         for (let f = 0; f <= 2; f++) {
+                            let calculateCarrierCapacityLosses = tick + 1 >= _this.ticks ? true : user.fleet[f].delay + user.fleet[f].duration == tick + 1 ? true : false
                             let fleet = {
                                 name: '' + f,
                                 units: { ...user.fleet[f].units },
-                                calculateCarrierCapacityLosses: user.fleet[f].delay + user.fleet[f].duration == tick + 1 ? true : false,
+                                calculateCarrierCapacityLosses: calculateCarrierCapacityLosses,
                             }
 
                             if (user.fleet[f].delay == tick) {
@@ -435,10 +436,11 @@ export default {
                         let attacker = _this.getNewUserObj(user.id)
 
                         for (let f = 0; f <= 2; f++) {
+                            let calculateCarrierCapacityLosses = tick + 1 >= _this.ticks ? true : user.fleet[f].delay + user.fleet[f].duration == tick + 1 ? true : false
                             let fleet = {
                                 name: '' + f,
                                 units: { ...user.fleet[f].units },
-                                calculateCarrierCapacityLosses: user.fleet[f].delay + user.fleet[f].duration == tick + 1 ? true : false,
+                                calculateCarrierCapacityLosses: calculateCarrierCapacityLosses,
                             }
 
                             if (user.fleet[f].delay == tick) {
@@ -509,10 +511,12 @@ export default {
                             }
 
                             if (user.fleet[fleet.name].delay + user.fleet[fleet.name].duration > tick) {
+                                let calculateCarrierCapacityLosses =
+                                    tick + 1 >= _this.ticks ? true : user.fleet[fleet.name].delay + user.fleet[fleet.name].duration == tick + 1 ? true : false
                                 defender.fleets.push({
                                     name: fleet.name,
                                     units: { ...fleet.units },
-                                    calculateCarrierCapacityLosses: user.fleet[fleet.name].delay + user.fleet[fleet.name].duration == tick + 1 ? true : false,
+                                    calculateCarrierCapacityLosses: calculateCarrierCapacityLosses,
                                 })
                             }
                         })
@@ -546,10 +550,12 @@ export default {
                             }
 
                             if (user.fleet[fleet.name].delay + user.fleet[fleet.name].duration > tick) {
+                                let calculateCarrierCapacityLosses =
+                                    tick + 1 >= _this.ticks ? true : user.fleet[fleet.name].delay + user.fleet[fleet.name].duration == tick + 1 ? true : false
                                 attacker.fleets.push({
                                     name: fleet.name,
                                     units: { ...fleet.units },
-                                    calculateCarrierCapacityLosses: user.fleet[fleet.name].delay + user.fleet[fleet.name].duration == tick + 1 ? true : false,
+                                    calculateCarrierCapacityLosses: calculateCarrierCapacityLosses,
                                 })
                             }
                         })
@@ -564,7 +570,7 @@ export default {
             return request
         },
         simulate: async function () {
-            console.log("simulate")
+            console.log('simulate')
 
             // let _this = this
             if (this.mode == 0) {
@@ -604,9 +610,12 @@ export default {
                         newUsers = this.getPreTickUsers(combatUsers, i + 2)
                         if (newUsers.attackers.length > 0) {
                             request = this.getNextPreTickRequest(newUsers, 2)
-                            response = await axios.post('https://galactic-conquest.de/api/combats', request, cfg)
-                            this.updateUsers(combatUsers, response.data)
-                            this.results.push({ tick: i + 1, request: request, response: response.data, mode: 2 })
+                            // response = await axios.post('https://galactic-conquest.de/api/combats', request, cfg)
+                            // this.updateUsers(combatUsers, response.data)
+                            // this.results.push({ tick: i + 1, request: request, response: response.data, mode: 2 })
+                            response = gnKs.execute(request)
+                            this.updateUsers(combatUsers, response)
+                            this.results.push({ tick: i + 1, request: request, response: response, mode: 2 })
                         }
                     }
                     if (mode > 0) {
@@ -614,9 +623,12 @@ export default {
                         newUsers = this.getPreTickUsers(combatUsers, i + 1)
                         if (newUsers.attackers.length > 0) {
                             request = this.getNextPreTickRequest(newUsers, 1)
-                            response = await axios.post('https://galactic-conquest.de/api/combats', request, cfg)
-                            this.updateUsers(combatUsers, response.data)
-                            this.results.push({ tick: i + 1, request: request, response: response.data, mode: 1 })
+                            // response = await axios.post('https://galactic-conquest.de/api/combats', request, cfg)
+                            // this.updateUsers(combatUsers, response.data)
+                            // this.results.push({ tick: i + 1, request: request, response: response.data, mode: 1 })
+                            response = gnKs.execute(request)
+                            this.updateUsers(combatUsers, response)
+                            this.results.push({ tick: i + 1, request: request, response: response, mode: 1 })
                         }
                     }
 
@@ -624,9 +636,12 @@ export default {
                     newUsers = this.getNewUsers(combatUsers, i)
                     if ((newUsers.target || newUsers.defenders.length > 0 || newUsers.attackers.length > 0 || lastResult) && i >= 0) {
                         request = this.getNextRequest(lastResult, i, newUsers, 0)
-                        response = await axios.post('https://galactic-conquest.de/api/combats', request, cfg)
-                        lastResult = response.data
-                        this.updateUsers(combatUsers, response.data)
+                        // response = await axios.post('https://galactic-conquest.de/api/combats', request, cfg)
+                        // lastResult = response.data
+                        // this.updateUsers(combatUsers, response.data)
+                        response = gnKs.execute(request)
+                        lastResult = response
+                        this.updateUsers(combatUsers, response)
                         this.results.push({ tick: i + 1, request: request, response: lastResult, mode: 0 })
                     }
                 } catch (e) {

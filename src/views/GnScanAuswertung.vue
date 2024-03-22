@@ -83,7 +83,6 @@ import GNParser from '@/plugins/gnparser.js'
 import config from '@/config.json'
 import moment from 'moment'
 
-// import test from '@/test.json'
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-case-declarations */
 export default {

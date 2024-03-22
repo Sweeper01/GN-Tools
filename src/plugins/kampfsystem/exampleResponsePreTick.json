@@ -1,0 +1,165 @@
+{
+    "data": {
+        "type": "combat-results",
+        "attributes": {
+            "target": {
+                "name": "Gero",
+                "fleets": {
+                    "before": [
+                        {
+                            "name": "0",
+                            "units": {
+                                "CA": 3000,
+                                "ZE": 20,
+                                "AJ": 3000,
+                                "SR": 30,
+                                "LR": 100
+                            }
+                        },
+                        {
+                            "name": "1",
+                            "units": {
+                                "ZE": 20,
+                                "CA": 1000
+                            }
+                        }
+                    ],
+                    "after": [
+                        {
+                            "name": "0",
+                            "units": {
+                                "CA": 3000,
+                                "ZE": 20,
+                                "AJ": 3000,
+                                "SR": 30,
+                                "LR": 100
+                            },
+                            "losses": {},
+                            "destroyed": {
+                                "TR": 1
+                            },
+                            "resources": {
+                                "cost": {
+                                    "metal": 0,
+                                    "crystal": 0
+                                }
+                            }
+                        },
+                        {
+                            "name": "1",
+                            "units": {
+                                "ZE": 20,
+                                "CA": 1000
+                            },
+                            "losses": {},
+                            "destroyed": {},
+                            "resources": {
+                                "cost": {
+                                    "metal": 0,
+                                    "crystal": 0
+                                }
+                            }
+                        }
+                    ]
+                },
+                "extractors": {
+                    "before": {
+                        "metal": 500,
+                        "crystal": 700
+                    },
+                    "after": {
+                        "metal": 500,
+                        "crystal": 700
+                    },
+                    "stolen": {
+                        "metal": 0,
+                        "crystal": 0
+                    }
+                },
+                "resources": {
+                    "salvaged": {
+                        "metal": 0,
+                        "crystal": 0
+                    }
+                }
+            },
+            "attackers": [
+                {
+                    "name": "Felicitas",
+                    "fleets": {
+                        "before": [
+                            {
+                                "name": "1",
+                                "units": {
+                                    "TR": 100,
+                                    "FR": 500,
+                                    "BO": 2000,
+                                    "KR": 40
+                                }
+                            },
+                            {
+                                "name": "2",
+                                "units": {
+                                    "CL": 7000,
+                                    "ZE": 100
+                                }
+                            }
+                        ],
+                        "after": [
+                            {
+                                "name": "1",
+                                "units": {
+                                    "TR": 99,
+                                    "FR": 500,
+                                    "BO": 2000,
+                                    "KR": 40
+                                },
+                                "losses": {
+                                    "TR": 1
+                                },
+                                "destroyed": {},
+                                "carrierCapacityLosses": {},
+                                "extractorLosses": {},
+                                "resources": {
+                                    "cost": {
+                                        "metal": 200000,
+                                        "crystal": 50000
+                                    }
+                                },
+                                "extractors": {
+                                    "stolen": {
+                                        "metal": 0,
+                                        "crystal": 0
+                                    }
+                                }
+                            },
+                            {
+                                "name": "2",
+                                "units": {
+                                    "CL": 7000,
+                                    "ZE": 100
+                                },
+                                "losses": {},
+                                "destroyed": {},
+                                "carrierCapacityLosses": {},
+                                "extractorLosses": {},
+                                "resources": {
+                                    "cost": {
+                                        "metal": 0,
+                                        "crystal": 0
+                                    }
+                                },
+                                "extractors": {
+                                    "stolen": {
+                                        "metal": 0,
+                                        "crystal": 0
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    }
+}

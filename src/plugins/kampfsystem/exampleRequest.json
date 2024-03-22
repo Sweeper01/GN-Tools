@@ -1,0 +1,78 @@
+{
+    "data": {
+        "type": "combats",
+        "attributes": {
+            "target": {
+                "name": "Gero",
+                "fleets": [
+                    {
+                        "name": "0",
+                        "units": {
+                            "CA": 3000,
+                            "ZE": 20,
+                            "AJ": 3000,
+                            "SR": 30,
+                            "LR": 100
+                        }
+                    },
+                    {
+                        "name": "1",
+                        "units": {
+                            "ZE": 20,
+                            "CA": 1000
+                        }
+                    }
+                ],
+                "extractors": {
+                    "metal": 500,
+                    "crystal": 700
+                }
+            },
+            "attackers": [
+                {
+                    "name": "Felicitas",
+                    "fleets": [
+                        {
+                            "name": "1",
+                            "units": {
+                                "TR": 94,
+                                "FR": 474,
+                                "BO": 2000,
+                                "KR": 40
+                            },
+                            "calculateCarrierCapacityLosses": true
+                        },
+                        {
+                            "name": "2",
+                            "units": {
+                                "CL": 7000,
+                                "ZE": 100
+                            },
+                            "calculateCarrierCapacityLosses": true
+                        }
+                    ]
+                }
+            ],
+            "defenders": [
+                {
+                    "name": "Bilal",
+                    "fleets": [
+                        {
+                            "name": "1",
+                            "units": {
+                                "CA": 4000,
+                                "TR": 20,
+                                "ZE": 50,
+                                "JA": 1000
+                            },
+                            "calculateCarrierCapacityLosses": true
+                        }
+                    ]
+                }
+            ],
+            "config": {
+                "mode": 0
+            }
+        }
+    }
+}

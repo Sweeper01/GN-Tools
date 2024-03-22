@@ -6,9 +6,9 @@ import GnScanAuswertung from '@/views/GnScanAuswertung.vue'
 Vue.use(Router)
 
 export default new Router({
-    routes: [
-      { path: '/', component: GnSimulator },
-      { path: '/ScanAuswertung', component: GnScanAuswertung },
-    ]
+  routes: [
+    { path: '/', component: GnSimulator },
+    { path: '/ScanAuswertung', component: GnScanAuswertung },
+  ]
 })
 
