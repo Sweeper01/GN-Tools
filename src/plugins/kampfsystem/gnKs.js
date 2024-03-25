@@ -126,9 +126,15 @@ export default {
         })
 
         // TODO: Verluste von Trägern im Vortick: Jäger/Bomber werden anteilig verloren 
+<<<<<<< HEAD
         // if (isPreStrikeMode) {
         //     calculateCarrierCapacityLosses(units, Attacker->after);
         //     calculateCarrierCapacityLosses(units, Defender->after);
+=======
+        // if ($isPreStrikeMode) {
+        //     $this->calculateCarrierCapacityLosses($unitCollection, $fleetStateAttacker->after);
+        //     $this->calculateCarrierCapacityLosses($unitCollection, $fleetStateDefender->after);
+>>>>>>> fb5f1653bf92777c8643a80deffa6786684bfc9c
         // }
 
         gnConfig.units.forEach((unit) => {
