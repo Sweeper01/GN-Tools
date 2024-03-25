@@ -125,6 +125,9 @@ export default {
             }
         })
 
+        // TODO: Wird vermutlich nicht umgesetzt, zu kompliziert/lohnt net
+        // wenn die flotte recalled wird, wird nachgesehen ob es eine zweite flotte von dem user im orbit mit freien träger kapazitäten gibt. falls ja, werden diese auf die andere flotte geschoben
+
         // TODO: Verluste von Trägern im Vortick: Jäger/Bomber werden anteilig verloren 
         // if (isPreStrikeMode) {
         //     calculateCarrierCapacityLosses(units, Attacker->after);
