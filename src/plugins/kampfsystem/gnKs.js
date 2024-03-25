@@ -125,10 +125,10 @@ export default {
             }
         })
 
-        // if ($isPreStrikeMode) {
-        //     // TODO this maybe in strike not at the end of fight.
-        //     $this->calculateCarrierCapacityLosses($unitCollection, $fleetStateAttacker->after);
-        //     $this->calculateCarrierCapacityLosses($unitCollection, $fleetStateDefender->after);
+        // TODO: Verluste von Trägern im Vortick: Jäger/Bomber werden anteilig verloren 
+        // if (isPreStrikeMode) {
+        //     calculateCarrierCapacityLosses(units, Attacker->after);
+        //     calculateCarrierCapacityLosses(units, Defender->after);
         // }
 
         gnConfig.units.forEach((unit) => {
@@ -272,7 +272,7 @@ export default {
     },
 
     // calculateCarrierCapacityLosses: function (unitCollection, units) {
-    //     // TODO calculate carrier space losses due to pre strike
+    //    TODO calculate carrier space losses due to pre strike
     // }
 
     extractorCombat: function (response) {
