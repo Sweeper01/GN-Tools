@@ -125,8 +125,8 @@ export default {
             }
         })
 
+        // TODO: Verluste von Trägern im Vortick: Jäger/Bomber werden anteilig verloren 
         // if ($isPreStrikeMode) {
-        // TODO: stelle sollte korrekt sein, Funktion unten mit PHP Code
         //     $this->calculateCarrierCapacityLosses($unitCollection, $fleetStateAttacker->after);
         //     $this->calculateCarrierCapacityLosses($unitCollection, $fleetStateDefender->after);
         // }
@@ -272,46 +272,7 @@ export default {
     },
 
     // calculateCarrierCapacityLosses: function (unitCollection, units) {
-    // TODO calculate carrier space losses due to pre strike
-
-    // s1 = Jäger, s2 = Bomber
-    // Träger-Check
-    // $flotte_n["a"]["s1"] = 0;
-    // $flotte_n["a"]["s2"] = 0;
-    // foreach ($attacker as $id => $org) {
-    //     foreach (array_keys($org) as $fid) {
-    //         $carrier_killed = $attacker[$id][$fid]["o"]["s7"] - $attacker[$id][$fid]["n"]["s7"];
-    //         descr(sprintf('orbit-(%s) Trägercheck: %s', $dest[0], $carrier_killed));
-    //         $s1 = $attacker[$id][$fid]["n"]["s1"];
-    //         $s2 = $attacker[$id][$fid]["n"]["s2"];
-    //         if ($carrier_killed > 0) {
-    //             $max = $attacker[$id][$fid]["n"]["s7"] * 100;
-    //             $zusammen = $s1 + $s2;
-    //             $mehr = $zusammen / $attacker[$id][$fid]["o"]["s7"] * $carrier_killed;
-    //             $s1n = floor($mehr * 0.5);
-    //             $s2n = ceil($mehr * 0.5);
-    //             $stats["preshot_traeger_dest_s1"] += $s1n;
-    //             $stats["preshot_traeger_dest_s2"] += $s2n;
-    //             $userstats[$dest[0]]["des"]["s1"] += $s1n;
-    //             $userstats[$dest[0]]["des"]["s2"] += $s2n;
-    //             $s1 -= $s1n;
-    //             $s2 -= $s2n;
-    //             if ($s1 < 0) {
-    //                 $s2 += $s1;
-    //                 $s1 = 0;
-    //             } elseif ($s2 < 0) {
-    //                 $s1 += $s2;
-    //                 $s2 = 0;
-    //             }
-
-    //             $attacker[$id][$fid]["n"]["s1"] = $s1;
-    //             $attacker[$id][$fid]["n"]["s2"] = $s2;
-    //         }
-
-    //         $flotte_n["a"]["s1"] += $s1;
-    //         $flotte_n["a"]["s2"] += $s2;
-    //     }
-    // }
+    //    TODO calculate carrier space losses due to pre strike
     // }
 
     extractorCombat: function (response) {
