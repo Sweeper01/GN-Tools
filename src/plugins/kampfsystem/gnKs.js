@@ -96,7 +96,7 @@ export default {
                     //defender
                     ratioDefender = combatSetting.ratio
                     unusedRatioDefender = Math.min(1 - ratioDefender, unusedRatioDefender)
-                    if (currentStrike > 3 && !isPreStrikeMode) {
+                    if (currentStrike > 3) {
                         ratioDefender += unusedRatioDefender
                     }
 
@@ -128,15 +128,16 @@ export default {
         // TODO: Wird vermutlich nicht umgesetzt, zu kompliziert/lohnt net
         // wenn die flotte recalled wird, wird nachgesehen ob es eine zweite flotte von dem user im orbit mit freien träger kapazitäten gibt. falls ja, werden diese auf die andere flotte geschoben
 
-        // TODO: Verluste von Trägern im Vortick: Jäger/Bomber werden anteilig verloren 
-        // if (isPreStrikeMode) {
-        //     calculateCarrierCapacityLosses(units, Attacker->after);
-        //     calculateCarrierCapacityLosses(units, Defender->after);
-        // }
-
         gnConfig.units.forEach((unit) => {
             response = this.splitLosses(unit, sumAttacker, sumDefender, response)
         })
+
+        // TODO: Verluste von Trägern im Vortick: Jäger/Bomber werden anteilig verloren 
+        console.warn("HangarLosses!")
+        if (isPreStrikeMode) {
+            this.calculateCarrierCapacityHangarLosses(response);
+        }
+
 
         return response
     },
@@ -212,9 +213,6 @@ export default {
                     let unitsLeft = Math.max(Math.round(unitsAfterTotal * unitsBefore / unitsBeforeTotal), 0);
                     let numberOfLostUnits = unitsBefore - unitsLeft;
                     if (numberOfLostUnits > 0) {
-                        // var fleetAfter = strikeState.fleetsAfter.getFleetById(fleet.fleetId);
-                        // fleetAfter.losses.add(unit.unitId, numberOfLostUnits);
-                        // fleetAfter.units.sub(unit.unitId, numberOfLostUnits);
                         attacker.fleets.after.forEach((fleetAfter) => {
                             if (fleetAfter.name == fleetBefore.name) {
                                 fleetAfter.losses[unit.unitId] = fleetAfter.losses[unit.unitId] ? fleetAfter.losses[unit.unitId] + numberOfLostUnits : numberOfLostUnits
@@ -237,9 +235,6 @@ export default {
                     let unitsLeft = Math.max(Math.round(unitsAfterTotal * unitsBefore / unitsBeforeTotal), 0);
                     let numberOfLostUnits = unitsBefore - unitsLeft;
                     if (numberOfLostUnits > 0) {
-                        // var fleetAfter = strikeState.fleetsAfter.getFleetById(fleet.fleetId);
-                        // fleetAfter.losses.add(unit.unitId, numberOfLostUnits);
-                        // fleetAfter.units.sub(unit.unitId, numberOfLostUnits);
                         defender.fleets.after.forEach((fleetAfter) => {
                             if (fleetAfter.name == fleetBefore.name) {
                                 fleetAfter.losses[unit.unitId] = fleetAfter.losses[unit.unitId] ? fleetAfter.losses[unit.unitId] + numberOfLostUnits : numberOfLostUnits
@@ -258,9 +253,6 @@ export default {
                 let unitsLeft = Math.max(Math.round(unitsAfterTotal * unitsBefore / unitsBeforeTotal), 0);
                 let numberOfLostUnits = unitsBefore - unitsLeft;
                 if (numberOfLostUnits > 0) {
-                    // var fleetAfter = strikeState.fleetsAfter.getFleetById(fleet.fleetId);
-                    // fleetAfter.losses.add(unit.unitId, numberOfLostUnits);
-                    // fleetAfter.units.sub(unit.unitId, numberOfLostUnits);
                     response.attributes.target.fleets.after.forEach((fleetAfter) => {
                         if (fleetAfter.name == fleetBefore.name) {
                             fleetAfter.losses[unit.unitId] = fleetAfter.losses[unit.unitId] ? fleetAfter.losses[unit.unitId] + numberOfLostUnits : numberOfLostUnits
@@ -274,9 +266,57 @@ export default {
         return response
     },
 
-    // calculateCarrierCapacityLosses: function (unitCollection, units) {
-    //    TODO calculate carrier space losses due to pre strike
-    // }
+    calculateCarrierCapacityHangarLosses: function (response) {
+        response.attributes.attackers.forEach((attacker) => {
+            attacker.fleets.after.forEach((fleetAfter) => {
+
+                let carrierCapacityBefore = 0
+                let carrierCapacityAfter = gnKsHelper.countCarrierCapacity(fleetAfter)
+
+                attacker.fleets.before.forEach((fleetBefore) => {
+                    if (fleetBefore.name == fleetAfter.name) {
+                        carrierCapacityBefore = gnKsHelper.countCarrierCapacity(fleetBefore)
+                    }
+                })
+
+                let totalCarrierCapacityLoss = carrierCapacityBefore - carrierCapacityAfter;
+                let totalCarrierCapacityConsumptionAfter = gnKsHelper.countCarrierConsumption(fleetAfter)
+
+                if (totalCarrierCapacityLoss > 0 && totalCarrierCapacityConsumptionAfter > 0) {
+                    for (const [key, value] of Object.entries(fleetAfter.units)) {
+
+                        let unit = gnKsHelper.getUnitById(key)
+
+                        if (value > 0 && unit.carrierSpaceConsumption > 0) {
+                            let consumptionRatio = (value * unit.carrierSpaceConsumption) / carrierCapacityBefore
+
+                            let lostUnits = Math.round(totalCarrierCapacityLoss * consumptionRatio)
+
+                            if (lostUnits > 0) {
+                                fleetAfter.losses[key] = fleetAfter.losses[key] ? fleetAfter.losses[key] + lostUnits : lostUnits
+                                fleetAfter.units[key] -= lostUnits
+                                fleetAfter.carrierCapacityLosses[key] = fleetAfter.carrierCapacityLosses[key] ? fleetAfter.carrierCapacityLosses[key] + lostUnits : lostUnits
+                            }
+                        }
+                    }
+                }
+
+            })
+        })
+
+        //         if ($lostUnits <= 0) {
+        //             continue;
+        //         }
+
+        //         $fleetAfter->carrierCapacityLossesHangar->add($unitId, $lostUnits);
+        //         $fleetAfter->losses->add($unitId, $lostUnits);
+        //         $fleetAfter->units->sub($unitId, $lostUnits);
+
+        //         $fleetStateAttacker->losses->add($unitId, $lostUnits);
+        //         $fleetStateAttacker->after->sub($unitId, $lostUnits);
+        //     }
+        // }
+    },
 
     extractorCombat: function (response) {
         let sumAttacker = gnKsHelper.sumAttacker(response.attributes.attackers)
